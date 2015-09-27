@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Kelpie.Core;
+using Kelpie.Core.Domain;
+using Kelpie.Core.Repository;
 using NUnit.Framework;
 
 namespace Kelpie.Tests

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Kelpie.Core.Domain;
 using Raven.Client;
 using Raven.Client.Document;
 
-namespace Kelpie.Core
+namespace Kelpie.Core.Repository
 {
 	public class LogEntryRepository : IDisposable
 	{
@@ -41,6 +40,7 @@ namespace Kelpie.Core
 
 		public void DeleteAll()
 		{
+			_documentSession.Advanced.MaxNumberOfRequestsPerSession = 100;
 			var objects = _documentSession.Query<LogEntry>().ToList();
 			while (objects.Any())
 			{

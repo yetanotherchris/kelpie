@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Kelpie.Core;
+using Kelpie.Core.Domain;
 
 namespace Kelpie.Web.Models
 {

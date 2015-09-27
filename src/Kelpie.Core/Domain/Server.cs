@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace Kelpie.Core
+namespace Kelpie.Core.Domain
 {
 	public class Server
 	{

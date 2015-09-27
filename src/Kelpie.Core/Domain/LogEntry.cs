@@ -1,7 +1,7 @@
 using System;
 using Raven.Imports.Newtonsoft.Json;
 
-namespace Kelpie.Core
+namespace Kelpie.Core.Domain
 {
 	public class LogEntry
 	{

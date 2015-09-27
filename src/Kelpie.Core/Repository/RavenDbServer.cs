@@ -1,13 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Kelpie.Core.Domain;
 using Raven.Abstractions.Indexing;
 using Raven.Client;
 using Raven.Client.Embedded;
 using Raven.Client.Indexes;
 using Raven.Database.Server;
 
-namespace Kelpie.Core
+namespace Kelpie.Core.Repository
 {
 	/// <summary>
 	/// To manage RavenDB, go to http://localhost:8087/

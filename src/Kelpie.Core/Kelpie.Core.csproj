@@ -75,13 +75,14 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="Domain\LogEntry.cs" />
+    <Compile Include="IConfiguration.cs" />
+    <Compile Include="IO\PinvokeWindowsNetworking.cs" />
     <Compile Include="Parser\LogFileParser.cs" />
-    <Compile Include="IO\FileReader.cs" />
     <Compile Include="Repository\LogEntryRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\RavenDbServer.cs" />
     <Compile Include="Domain\Server.cs" />
-    <Compile Include="IO\ServerLogReader.cs" />
+    <Compile Include="IO\FileSystemLogReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
