@@ -189,6 +189,9 @@
   <ItemGroup>
     <Content Include="Views\Home\ThisWeek.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Views\Home\Refresh.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

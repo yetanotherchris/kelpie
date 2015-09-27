@@ -54,6 +54,11 @@ namespace Kelpie.Web.Controllers
 
 		public ActionResult Refresh()
 		{
+			return View();
+		}
+
+		public ActionResult RefreshAsync()
+		{
 			// This should be in a service
 			_repository.DeleteAll();
 
