@@ -9,10 +9,7 @@ namespace Kelpie.Core
 {
 	public class ServerLogReader
 	{
-		private string[] _servers =
-		{
-			"", ""
-		};
+		public string Servers { get; set; }
 
 		public IEnumerable<LogEntry> LogsForServer()
 		{

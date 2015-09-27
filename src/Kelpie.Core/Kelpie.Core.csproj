@@ -63,6 +63,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -72,14 +73,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LogEntry.cs" />
-    <Compile Include="LogFileParser.cs" />
-    <Compile Include="FileReader.cs" />
-    <Compile Include="LogEntryRepository.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="Domain\LogEntry.cs" />
+    <Compile Include="Parser\LogFileParser.cs" />
+    <Compile Include="IO\FileReader.cs" />
+    <Compile Include="Repository\LogEntryRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RavenDbServer.cs" />
-    <Compile Include="Server.cs" />
-    <Compile Include="ServerLogReader.cs" />
+    <Compile Include="Repository\RavenDbServer.cs" />
+    <Compile Include="Domain\Server.cs" />
+    <Compile Include="IO\ServerLogReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -87,6 +89,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

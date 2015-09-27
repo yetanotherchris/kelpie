@@ -1,0 +1,32 @@
+﻿@model IEnumerable<LogEntry>
+@{
+	ViewBag.Title = "This week's log entries for " + ViewBag.ApplicationName;
+}
+
+<h2 class="application-name">@ViewBag.ApplicationName</h2>
+
+<div class="row">
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-1)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-2)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-3)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-4)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-5)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-6)))
+</div>
+
+@section AdditionalNav
+{
+	<li><a href="@Url.Action("Today", "Home", new { applicationName = @ViewBag.ApplicationName })">Today</a></li>
+	<li><a href="@Url.Action("ThisWeek", "Home", new { applicationName = @ViewBag.ApplicationName })">This week</a></li>
+}
+
+@section scripts
+{
+	<script src="~/Scripts/expand-messages.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			Kelpie.ErrorMessageExpander.init("@ViewBag.ApplicationName");
+		});
+	</script>
+}
