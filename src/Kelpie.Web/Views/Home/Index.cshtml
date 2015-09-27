@@ -1,0 +1,31 @@
+﻿@{
+	ViewBag.Title = "Select an application";
+}
+
+<script type="text/javascript">
+	var appNames = [
+		{ value: "App1", data: "App1" },
+		{ value: "App2.Web", data: "App2.Web" },
+		{ value: "App3", data: "App3" },
+		{ value: "App4", data: "App4" },
+		{ value: "App5.Web", data: "App5.Web" },
+		{ value: "App6", data: "App6" }
+	];
+
+	$(document).ready(function()
+	{
+		$("#applicationName").autocomplete({
+			lookup: appNames
+		});
+	});
+</script>
+<div class="row">
+	<h1>Woof</h1>
+
+	<div class="input-field">
+		<form method="GET" action="@Url.Action("ByApplication", "Home")">
+			<input type="text" name="applicationName" id="applicationName" placeholder="Enter an application name">
+			<input type="submit" class="btn btn-primary btn-lg" value="Select" />
+		</form>
+	</div>
+</div>

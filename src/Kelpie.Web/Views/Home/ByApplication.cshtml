@@ -1,0 +1,50 @@
+﻿@model IEnumerable<LogEntry>
+@{
+	ViewBag.Title = "Todays log entries for " + ViewBag.ApplicationName;
+}
+
+<h2 class="application-name">@ViewBag.ApplicationName</h2>
+
+<div class="row">
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-1)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-2)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-3)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-4)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-5)))
+	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-6)))
+</div>
+
+@section scripts
+{
+<script type="text/javascript">
+	$(document).ready(function () {
+		$("table.errors .expand").click(function () {
+			var tr = $(this).parent().parent();
+			var nextRow = tr.next();
+			var ticks = tr.attr("id");
+			var pre = nextRow.find(".message");
+
+			if (pre.text() !== "") {
+				tr.toggleClass("selected");
+				nextRow.toggle();
+				return;
+			}
+			else {
+				$.ajax({
+					method: "GET",
+					url: "/Home/LoadMessage",
+					data: { ticks: ticks, applicationName: "@ViewBag.ApplicationName" }
+				})
+				.done(function (msg) {
+					tr.next().find(".message").html(msg);
+				});
+
+				tr.addClass("selected");
+				nextRow.removeClass("hide");
+				nextRow.show();
+			}
+		});
+	});
+</script>
+}

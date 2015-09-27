@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - Kelpie</title>
+	<link rel="icon" type="image/png" href="/favicon.png"/>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="~/Content/Site.css" rel="stylesheet" />
+	<script src="~/Scripts/jquery.autocomplete.min.js"></script>
+</head>
+<body>
+	<nav>
+		<div class="nav-wrapper blue-grey">
+			<a href="/" class="brand-logo"><img src="~/img/dog.png" alt="Kelpie" /></a>
+			<ul id="nav-mobile" class="right hide-on-med-and-down">
+				<li><a href="/">Home</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container body-content">
+		@RenderBody()
+	</div>
+
+	<footer class="page-footer blue-grey">
+		<div class="footer-copyright blue-grey">
+			<div class="container">
+				&copy; @DateTime.Now.Year - Chris
+			</div>
+		</div>
+	</footer>
+	@RenderSection("scripts", required: false)
+</body>
+</html>

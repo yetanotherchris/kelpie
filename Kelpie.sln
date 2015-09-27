@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kelpie.Core", "src\Kelpie.Core\Kelpie.Core.csproj", "{AB9A1BCD-8185-409C-A355-2713DA428772}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kelpie.Tests", "src\Kelpie.Tests\Kelpie.Tests.csproj", "{B803B4DA-C22D-4081-B398-46BD72F7465C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kelpie.Web", "src\Kelpie.Web\Kelpie.Web.csproj", "{1254869F-4143-4A13-9E20-E0618F7FEBF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kelpie.Web.IisConfig", "src\Kelpie.Web.IisConfig\Kelpie.Web.IisConfig.csproj", "{F399CBC4-5A39-4156-97CC-1F7412045663}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB9A1BCD-8185-409C-A355-2713DA428772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB9A1BCD-8185-409C-A355-2713DA428772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB9A1BCD-8185-409C-A355-2713DA428772}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AB9A1BCD-8185-409C-A355-2713DA428772}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AB9A1BCD-8185-409C-A355-2713DA428772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB9A1BCD-8185-409C-A355-2713DA428772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB9A1BCD-8185-409C-A355-2713DA428772}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AB9A1BCD-8185-409C-A355-2713DA428772}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B803B4DA-C22D-4081-B398-46BD72F7465C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B803B4DA-C22D-4081-B398-46BD72F7465C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B803B4DA-C22D-4081-B398-46BD72F7465C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B803B4DA-C22D-4081-B398-46BD72F7465C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B803B4DA-C22D-4081-B398-46BD72F7465C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B803B4DA-C22D-4081-B398-46BD72F7465C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B803B4DA-C22D-4081-B398-46BD72F7465C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B803B4DA-C22D-4081-B398-46BD72F7465C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1254869F-4143-4A13-9E20-E0618F7FEBF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1254869F-4143-4A13-9E20-E0618F7FEBF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1254869F-4143-4A13-9E20-E0618F7FEBF8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1254869F-4143-4A13-9E20-E0618F7FEBF8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1254869F-4143-4A13-9E20-E0618F7FEBF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1254869F-4143-4A13-9E20-E0618F7FEBF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1254869F-4143-4A13-9E20-E0618F7FEBF8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1254869F-4143-4A13-9E20-E0618F7FEBF8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F399CBC4-5A39-4156-97CC-1F7412045663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F399CBC4-5A39-4156-97CC-1F7412045663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F399CBC4-5A39-4156-97CC-1F7412045663}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F399CBC4-5A39-4156-97CC-1F7412045663}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{F399CBC4-5A39-4156-97CC-1F7412045663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F399CBC4-5A39-4156-97CC-1F7412045663}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F399CBC4-5A39-4156-97CC-1F7412045663}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F399CBC4-5A39-4156-97CC-1F7412045663}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
