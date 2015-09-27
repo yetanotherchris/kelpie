@@ -145,6 +145,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="img\dog.png" />
+    <Content Include="img\refreshing.gif" />
     <Content Include="Scripts\expand-messages.js" />
     <Content Include="Scripts\jquery.autocomplete.min.js" />
     <Content Include="Scripts\_references.js" />
