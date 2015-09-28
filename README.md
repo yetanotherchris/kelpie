@@ -20,7 +20,6 @@ Scans NLog *text* log files and displays them in a filterable way in an MVC appl
 3. Table of logs for this week
 4. Show error messages in detail
 5. Rescan all logs
-6. 
 
 ### Iteration 1.1
 1. Remove RavenDB and put MongoDB there.
