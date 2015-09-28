@@ -19,7 +19,7 @@
 		<tbody>
 		@foreach (LogEntry logEntry in Model.LogEntries)
 		{
-			<tr id="@logEntry.CssId">
+			<tr id="@logEntry.Id">
 				<td class="error-time">@logEntry.DateTime.ToShortTimeString()</td>
 				<td class="error-message">@logEntry.TruncatedMessage</td>
 				<td class="error-server">@logEntry.Server</td>

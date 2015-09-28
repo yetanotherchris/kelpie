@@ -8,6 +8,7 @@ using Kelpie.Core;
 using Kelpie.Core.Domain;
 using Kelpie.Core.IO;
 using Kelpie.Core.Repository;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 
 namespace Kelpie.Web.Controllers
@@ -20,7 +21,7 @@ namespace Kelpie.Web.Controllers
 		public HomeController()
 		{
 			_configuration = new Configuration();
-			_repository = new LogEntryRepository(RavenDbServer.DocumentStore);
+			_repository = new LogEntryRepository(new MongoClient());
 		}
 
 		public ActionResult Index()
@@ -31,11 +32,8 @@ namespace Kelpie.Web.Controllers
 		public ActionResult Today(string applicationName)
 		{
 			ViewBag.ApplicationName = applicationName;
-			using (_repository)
-			{
-				var entries = _repository.GetEntriesToday(applicationName);
-				return View(entries);
-			}
+			var entries = _repository.GetEntriesToday(applicationName);
+			return View(entries);
 		}
 
 		public ActionResult ThisWeek(string applicationName)
@@ -45,28 +43,10 @@ namespace Kelpie.Web.Controllers
 			return View(entries);
 		}
 
-		public ActionResult LoadMessage(long ticks, string applicationName)
+		public ActionResult LoadMessage(Guid id)
 		{
-			ViewBag.ApplicationName = applicationName;
-			LogEntry entry = _repository.GetEntry(new DateTime(ticks), applicationName);
+			LogEntry entry = _repository.GetEntry(id);
 			return Content(entry.Message.Trim());
-		}
-
-		public ActionResult Refresh()
-		{
-			return View();
-		}
-
-		public ActionResult RefreshAsync()
-		{
-			// This should be in a service
-			_repository.DeleteAll();
-
-			var logReader = new FileSystemLogReader(_configuration);
-			var allEntries = logReader.ScanLogDirectories();
-			_repository.BulkSave(allEntries);
-
-			return Content("Finished");
 		}
 
 		/// <summary>
@@ -75,12 +55,6 @@ namespace Kelpie.Web.Controllers
 		public ActionResult GetApplications()
 		{
 			return Content(JsonConvert.SerializeObject(_configuration.Applications));
-		}
-
-		protected override void Dispose(bool disposing)
-		{
-			_repository.Dispose();
-			base.Dispose(disposing);
 		}
 	}
 }

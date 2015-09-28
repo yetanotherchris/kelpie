@@ -1,61 +1,87 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Parser;
+using Kelpie.Core.Repository;
 
 namespace Kelpie.Core.IO
 {
 	public class FileSystemLogReader
 	{
 		private readonly Configuration _configuration;
+		private readonly LogEntryRepository _repository;
 
-		public FileSystemLogReader(Configuration configuration)
+		public FileSystemLogReader(Configuration configuration, LogEntryRepository repository)
 		{
 			_configuration = configuration;
+			_repository = repository;
 		}
 
-		public IEnumerable<LogEntry> ScanLogDirectories()
+		private void WriteCyan(string text, params object[] args)
 		{
-			var entries = new List<LogEntry>();
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine(text, args);
+			Console.ForegroundColor = ConsoleColor.White;
+		}
 
-			Parallel.ForEach(_configuration.ServerPaths, (serverPath) =>
+		public void ScanLogDirectoriesAndAdd()
+		{
+			foreach (string serverPath in _configuration.ServerPaths)
 			{
-				if (serverPath.StartsWith("\\") && !serverPath.StartsWith("\\localhost"))
+                if (serverPath.StartsWith("\\") && !serverPath.StartsWith("\\localhost"))
 				{
 					// Net use the server
 					PinvokeWindowsNetworking.ConnectToRemote(serverPath, _configuration.ServerUsername, _configuration.ServerPassword);
 				}
 
-				entries.AddRange(GetLogsForServer(serverPath));
-			});
+				var uri = new Uri(serverPath);
+				string serverName = uri.Host;
+				if (string.IsNullOrEmpty(serverName))
+					serverName = "localhost";
 
-			return entries;
+				AddLogsForServer(serverPath, serverName);
+			}
 		}
 
-		private IEnumerable<LogEntry> GetLogsForServer(string fullPath)
+		private void AddLogsForServer(string fullPath, string serverName)
 		{
-			var serverEntries = new List<LogEntry>();
+			IEnumerable<string> directories = Directory.EnumerateDirectories(fullPath).ToList();
 
-			Parallel.ForEach(Directory.EnumerateDirectories(fullPath), (directory) =>
+			string tempRoot = Path.Combine(Path.GetTempPath(), "Kelpie", serverName);
+			if (!Directory.Exists(tempRoot))
+				Directory.CreateDirectory(tempRoot);
+
+			foreach (string directory in directories)
 			{
-				string applicationName = Path.GetFileName(directory);
 				string[] logFiles = Directory.GetFiles(directory, "*.log");
 
-				foreach (string file in logFiles)
+				if (logFiles.Any())
 				{
-					var uri = new Uri(fullPath);
-					string serverName = uri.Host;
-					if (string.IsNullOrEmpty(serverName))
-						serverName = "localhost";
+                    string appName = Path.GetFileName(directory);
+					string destPath = Path.Combine(tempRoot, appName);
+					WriteCyan("Copying files from {0} to {1}", directory, destPath);
 
-					var parser = new LogFileParser(file, serverName, applicationName);
-					serverEntries.AddRange(parser.Read());
+					if (!Directory.Exists(destPath))
+						Directory.CreateDirectory(destPath);
+
+					foreach (string file in logFiles)
+					{
+						string destFileName = file.Replace(directory, destPath);
+						File.Copy(file, destFileName, true);
+						Console.WriteLine("- Copied {0}", file);
+
+						var parser = new LogFileParser(destFileName, serverName, appName);
+						IEnumerable<LogEntry> entries = parser.Read();
+						Console.WriteLine("- Saving {0} items for {1}", entries.Count(), appName);
+
+						_repository.BulkSave(entries);
+					}
 				}
-			});
-
-			return serverEntries;
+			}
 		}
 	}
 }

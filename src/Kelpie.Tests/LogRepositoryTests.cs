@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Kelpie.Core;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Repository;
+using MongoDB.Driver;
 using NUnit.Framework;
 
 namespace Kelpie.Tests
@@ -14,14 +15,14 @@ namespace Kelpie.Tests
 	{
 		private LogEntryRepository CreateRepository()
 		{
-			return new LogEntryRepository(RavenDbTestSetup.DocumentStore);
+			return new LogEntryRepository(new MongoClient(), "Kelpie-tests");
 		}
 
 		[SetUp]
 		public void SetUp()
 		{
-			RavenDbTestSetup.ClearDocuments<LogEntry>();
-		}
+			CreateRepository().DeleteAll();
+        }
 
 		[Test]
 		public void should_save_entry()

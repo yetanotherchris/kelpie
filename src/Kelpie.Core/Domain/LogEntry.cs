@@ -1,10 +1,11 @@
 using System;
-using Raven.Imports.Newtonsoft.Json;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Kelpie.Core.Domain
 {
 	public class LogEntry
 	{
+		public Guid Id { get; set; }
 		public DateTime DateTime { get; set; }
 		public string Level { get; set; }
 		public string Source { get; set; }
@@ -15,13 +16,7 @@ namespace Kelpie.Core.Domain
 		public string ApplicationName { get; set; }
 		public string Server { get; set; }
 
-		[JsonIgnore]
-		public long CssId
-		{
-			get { return DateTime.Ticks; }
-		}
-
-		[JsonIgnore]
+		[BsonIgnore]
 		public string TruncatedMessage
 		{
 			get

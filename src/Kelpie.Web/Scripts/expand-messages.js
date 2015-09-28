@@ -2,12 +2,12 @@
 
 Kelpie.ErrorMessageExpander = function($)
 {
-	function init(applicationName)
+	function init()
 	{
 		$("table.errors .expand").click(function () {
 			var tr = $(this).parent().parent();
 			var nextRow = tr.next();
-			var ticks = tr.attr("id");
+			var id = tr.attr("id");
 			var pre = nextRow.find(".message");
 
 			if (pre.text() !== "") {
@@ -19,7 +19,7 @@ Kelpie.ErrorMessageExpander = function($)
 				$.ajax({
 					method: "GET",
 					url: "/Home/LoadMessage",
-					data: { "ticks": ticks, "applicationName": applicationName }
+					data: { "id": id }
 				})
 				.done(function (msg) {
 					tr.next().find(".message").html(msg);
