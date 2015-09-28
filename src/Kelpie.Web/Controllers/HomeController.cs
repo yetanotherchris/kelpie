@@ -43,6 +43,22 @@ namespace Kelpie.Web.Controllers
 			return View(entries);
 		}
 
+		public ActionResult AllExceptionTypes(string applicationName)
+		{
+			ViewBag.ApplicationName = applicationName;
+			var entries = _repository.GetEntriesThisWeekGroupedByException(applicationName);
+			return View(entries);
+		}
+
+		public ActionResult ExceptionType(string applicationName, string exceptionType)
+		{
+			ViewBag.ApplicationName = applicationName;
+			ViewBag.ExceptionType = exceptionType;
+
+			var entries = _repository.FindByExceptionType(applicationName, exceptionType);
+			return View(entries);
+		}
+
 		public ActionResult LoadMessage(Guid id)
 		{
 			LogEntry entry = _repository.GetEntry(id);

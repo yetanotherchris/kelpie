@@ -1,5 +1,4 @@
-﻿@using Kelpie.Core.Domain
-@model LogEntriesForDay
+﻿@model LogEntriesForDay
 <div class="collection">
 	<div class="collection-item active">@Model.DayOfWeek</div>
 </div>
@@ -11,6 +10,7 @@
 		<tr>
 			<th>Time</th>
 			<th>Message</th>
+			<th>Exception</th>
 			<th>Server</th>
 			<th></th>
 		</tr>
@@ -22,6 +22,7 @@
 			<tr id="@logEntry.Id">
 				<td class="error-time">@logEntry.DateTime.ToShortTimeString()</td>
 				<td class="error-message">@logEntry.TruncatedMessage</td>
+				<td>@logEntry.ExceptionType</td>
 				<td class="error-server">@logEntry.Server</td>
 				<td><a href="javascript:;" class="expand"><i class="tiny material-icons">code</i></a></td>
 			</tr>

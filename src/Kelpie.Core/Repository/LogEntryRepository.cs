@@ -56,6 +56,24 @@ namespace Kelpie.Core.Repository
 			return items.ToList().OrderByDescending(x => x.DateTime);
 		}
 
+		public IEnumerable<IGrouping<string,LogEntry>> GetEntriesThisWeekGroupedByException(string logApplication)
+		{
+			var items =
+				_collection.AsQueryable<LogEntry>()
+					.Where(x => x.ApplicationName.Equals(logApplication) && x.DateTime > DateTime.Today.AddDays(-7));
+
+			return items.ToList().GroupBy(x => x.ExceptionType);
+		}
+
+		public IEnumerable<LogEntry> FindByExceptionType(string logApplication, string exceptionType)
+		{
+			var items =
+				_collection.AsQueryable<LogEntry>()
+					.Where(x => x.ApplicationName.Equals(logApplication) && x.DateTime > DateTime.Today.AddDays(-7) && x.ExceptionType == exceptionType);
+
+			return items.ToList().OrderByDescending(x => x.DateTime);
+		}
+
 		public LogEntry GetEntry(Guid id)
 		{
 			return _collection.AsQueryable<LogEntry>().FirstOrDefault(x => x.Id == id);
