@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ByteSizeLib;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Parser;
 using Kelpie.Core.Repository;
@@ -21,18 +22,11 @@ namespace Kelpie.Core.IO
 			_repository = repository;
 		}
 
-		private void WriteCyan(string text, params object[] args)
-		{
-			Console.ForegroundColor = ConsoleColor.Cyan;
-			Console.WriteLine(text, args);
-			Console.ForegroundColor = ConsoleColor.White;
-		}
-
 		public void ScanLogDirectoriesAndAdd()
 		{
 			foreach (string serverPath in _configuration.ServerPaths)
 			{
-                if (serverPath.StartsWith("\\") && !serverPath.StartsWith("\\localhost"))
+                if (serverPath.StartsWith(@"\\") && !serverPath.StartsWith(@"\\localhost"))
 				{
 					// Net use the server
 					PinvokeWindowsNetworking.ConnectToRemote(serverPath, _configuration.ServerUsername, _configuration.ServerPassword);
@@ -49,38 +43,34 @@ namespace Kelpie.Core.IO
 
 		private void AddLogsForServer(string fullPath, string serverName)
 		{
-			IEnumerable<string> directories = Directory.EnumerateDirectories(fullPath).ToList();
+			Console.WriteLine("- Search for all .log files in {0}", fullPath);
+			IEnumerable<string> logFiles = Directory.EnumerateFiles(fullPath, "*.log", SearchOption.AllDirectories);
 
-			string tempRoot = Path.Combine(Path.GetTempPath(), "Kelpie", serverName);
-			if (!Directory.Exists(tempRoot))
-				Directory.CreateDirectory(tempRoot);
-
-			foreach (string directory in directories)
+			if (logFiles.Any())
 			{
-				string[] logFiles = Directory.GetFiles(directory, "*.log");
+				string tempRoot = Path.Combine(Path.GetTempPath(), "Kelpie", serverName);
+				if (!Directory.Exists(tempRoot))
+					Directory.CreateDirectory(tempRoot);
 
-				if (logFiles.Any())
+				Parallel.ForEach(logFiles, (file) =>
 				{
-                    string appName = Path.GetFileName(directory);
+					string directory = Path.GetDirectoryName(file);
+
+					// Copy the log file to the %TEMP% directory
+					string appName = Path.GetFileName(directory);
 					string destPath = Path.Combine(tempRoot, appName);
-					WriteCyan("Copying files from {0} to {1}", directory, destPath);
 
 					if (!Directory.Exists(destPath))
 						Directory.CreateDirectory(destPath);
 
-					foreach (string file in logFiles)
-					{
-						string destFileName = file.Replace(directory, destPath);
-						File.Copy(file, destFileName, true);
-						Console.WriteLine("- Copied {0}", file);
+					Console.WriteLine("- Copying {0} to local disk", file);
+					string destFileName = file.Replace(directory, destPath);
+					File.Copy(file, destFileName, true);
 
-						var parser = new LogFileParser(destFileName, serverName, appName);
-						IEnumerable<LogEntry> entries = parser.Read();
-						Console.WriteLine("- Saving {0} items for {1}", entries.Count(), appName);
-
-						_repository.BulkSave(entries);
-					}
-				}
+					Console.WriteLine("Parsing {0} ({1})", file, ByteSize.FromBytes(new FileInfo(file).Length).ToString());
+					var parser = new LogFileParser(destFileName, serverName, appName, _repository);
+					parser.ParseAndSave();
+				});
 			}
 		}
 	}

@@ -7,13 +7,7 @@ using MongoDB.Driver.Linq;
 
 namespace Kelpie.Core.Repository
 {
-	public class LogFilePath
-	{
-		public string ApplicationName { get; set; }
-		public string FilePath { get; set; }
-	}
-
-	public class LogEntryRepository
+	public class LogEntryRepository : ILogEntryRepository
 	{
 		private readonly MongoClient _mongoClient;
 		private readonly IMongoDatabase _database;

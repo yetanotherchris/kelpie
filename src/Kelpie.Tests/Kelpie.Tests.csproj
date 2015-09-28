@@ -78,6 +78,7 @@
     <Compile Include="LogFileParserTests.cs" />
     <Compile Include="LogRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoryMock.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ExampleLogs\full.log">

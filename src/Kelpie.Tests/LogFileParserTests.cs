@@ -16,10 +16,12 @@ namespace Kelpie.Tests
 	    public void read_should_return_empty_list_when_file_is_empty()
 	    {
 		    // Arrange
-			var logFileParser = new LogFileParser("ExampleLogs/empty.log", "local", "Sand");
+			var repository = new RepositoryMock();
+            var logFileParser = new LogFileParser("ExampleLogs/empty.log", "local", "Sand", repository);
 
 			// Act
-			IEnumerable<LogEntry> list = logFileParser.Read();
+			logFileParser.ParseAndSave();
+			IEnumerable<LogEntry> list = repository.LogEntries;
 
 			// Assert
 			Assert.That(list, Is.Not.Null);
@@ -30,29 +32,36 @@ namespace Kelpie.Tests
 		public void read_should_parse_all_entries()
 		{
 			// Arrange
-			var logFileParser = new LogFileParser("ExampleLogs/full.log", "local", "Sand");
+			var repository = new RepositoryMock();
+			DateTime expectedDate = DateTime.Parse("2015-09-24 10:25:13.7780");
+            var logFileParser = new LogFileParser("ExampleLogs/full.log", "local", "Sand", repository);
 
 			// Act
-			IEnumerable<LogEntry> list = logFileParser.Read();
+			logFileParser.ParseAndSave();
+			IEnumerable<LogEntry> list = repository.LogEntries;
 
 			// Assert
 			Assert.That(list, Is.Not.Null);
 			Assert.That(list.Count(), Is.EqualTo(648));
 
-			var entry = list.LastOrDefault();
-			Assert.That(entry.DateTime, Is.GreaterThan(DateTime.MinValue));
+			var entry = list.FirstOrDefault();
+			Assert.That(entry.DateTime, Is.EqualTo(expectedDate));
+			Assert.That(entry.ApplicationName, Is.EqualTo("Sand"));
+			Assert.That(entry.Server, Is.EqualTo("local"));
 			Assert.That(entry.Source, Is.EqualTo("AmazingApp"));
-			Assert.That(entry.Message, Is.Not.Null.Or.Empty);
+			Assert.That(entry.Message, Is.EqualTo("A non critical error occured on Page:http://www.example.com/Places/To/Buy/Caravans/WestLondon.html\r\n"));
 		}
 
 		[Test]
 		public void read_should_parse_last_exception_type_and_message_from_entry_stack()
 		{
 			// Arrange
-			var logFileParser = new LogFileParser("ExampleLogs/full.log", "local", "Sand");
+			var repository = new RepositoryMock();
+			var logFileParser = new LogFileParser("ExampleLogs/full.log", "local", "Sand", repository);
 
 			// Act
-			List<LogEntry> list = logFileParser.Read().ToList();
+			logFileParser.ParseAndSave();
+			List<LogEntry> list = repository.LogEntries;
 
 			// Assert
 			var entry = list[1];
