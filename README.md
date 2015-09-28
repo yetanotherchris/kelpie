@@ -1,6 +1,17 @@
 # kelpie
 Scans NLog *text* log files and displays them in a filterable way in an MVC application, using RavenDB for storage.
 
+## Getting started
+
+- Make sure you have IIS installed
+- Install MongoDB: https://www.mongodb.org/downloads
+- Create `c:\mongodb\data\db`
+- Run `"C:\Program Files\MongoDB\Server\3.0\bin\mongod.exe" --dbpath c:\mongodb\data\`
+  - Or install it as a service: https://docs.mongodb.org/manual/tutorial/install-mongodb-on-windows/#configure-a-windows-service-for-mongodb
+- Run the setup.ps1 script.
+- Update the app.config and web.config files with the servers and applications you want.
+- Import your logs using the Kelpie.ConsoleApp program.
+
 ## Roadmap
 
 ### Iteration 1
