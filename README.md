@@ -1,5 +1,5 @@
 # kelpie
-Scans NLog *text* log files and displays them in a filterable way in an MVC application, using RavenDB for storage.
+Scans NLog *text* log files and displays them in a filterable way in an MVC application, using MongoDB for storage.
 
 ## Getting started
 
