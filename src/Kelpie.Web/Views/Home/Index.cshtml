@@ -1,24 +1,34 @@
-﻿@{
-	ViewBag.Title = "Select an application";
+﻿@model IEnumerable<HomepageModel>
+@{
+	ViewBag.Title = "Welcome the Kelpie app.";
 }
 
-<script type="text/javascript">
-	var appNames = @Html.Action("GetApplications", "Home");
-
-	$(document).ready(function()
-	{
-		$("#applicationName").autocomplete({
-			lookup: appNames
-		});
-	});
-</script>
 <div class="row">
-	<h1>Woof</h1>
-
-	<div class="input-field">
-		<form method="GET" action="@Url.Action("Today", "Home")">
-			<input type="text" name="applicationName" id="applicationName" placeholder="Enter an application name">
-			<input type="submit" class="btn btn-primary btn-lg" value="Select" />
-		</form>
+	<h3>Applications</h3>
+	<div class="row" id="dashboard">
+		@foreach (HomepageModel item in Model)
+		{
+			<div class="col s3">
+				<div class="card blue-grey small">
+					<div class="card-content white-text">
+						<span class="card-title"><a href="@Url.Action("Today", "Home", new { applicationName = item.Application})">@item.Application</a></span>
+						<div class="new badge">@item.ErrorCount errors this week.</div>
+					@if (!string.IsNullOrEmpty(item.CommonException))
+					{
+						<br/>
+						<span>
+							Commonest exception: <code>@item.CommonException</code>
+						</span>
+					}
+					</div>
+					<div class="card-action">
+						<ul>
+							<li><a href="@Url.Action("AllExceptionTypes", "Home", new { applicationName = item.Application})">View common exceptions</a></li>
+							<li><a href="@Url.Action("ThisWeek", "Home", new { applicationName = item.Application})">View this week's logs</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		}
 	</div>
 </div>

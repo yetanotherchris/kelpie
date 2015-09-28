@@ -21,8 +21,8 @@ namespace Kelpie.Core.Domain
 		{
 			get
 			{
-				if (Message.Length > 30)
-					return Message.Substring(0, 30);
+				if (Message.Length > 100)
+					return Message.Substring(0, 100) + "...";
 
 				return Message;
 			}

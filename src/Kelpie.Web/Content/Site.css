@@ -28,3 +28,7 @@ pre.message {
 	font-size: 8pt;
 	max-width: 1280px;
 }
+
+#dashboard .card-title a { font-size: 14pt;color: white; }
+#dashboard .card-content { font-size: 10pt; }
+#dashboard code { font-size: 9pt;}

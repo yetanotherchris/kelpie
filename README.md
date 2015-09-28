@@ -32,4 +32,7 @@ Scans NLog *text* log files and displays them in a filterable way in an MVC appl
 1. Search messages
 
 ### Iteration 4
+1. Paging
+
+### Iteration 5
 1. Smart re-scanning, journaling the last scan time for each app and server.

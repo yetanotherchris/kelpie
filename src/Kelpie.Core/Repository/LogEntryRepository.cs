@@ -60,9 +60,11 @@ namespace Kelpie.Core.Repository
 		{
 			var items =
 				_collection.AsQueryable<LogEntry>()
-					.Where(x => x.ApplicationName.Equals(logApplication) && x.DateTime > DateTime.Today.AddDays(-7));
+					.Where(x => x.ApplicationName.Equals(logApplication)
+							&& x.DateTime > DateTime.Today.AddDays(-7) 
+							&& !string.IsNullOrEmpty(x.ExceptionType));
 
-			return items.ToList().GroupBy(x => x.ExceptionType);
+			return items.ToList().GroupBy(x => x.ExceptionType).OrderByDescending(x => x.Count()); // make sure to call ToList, or the groupby fails
 		}
 
 		public IEnumerable<LogEntry> FindByExceptionType(string logApplication, string exceptionType)

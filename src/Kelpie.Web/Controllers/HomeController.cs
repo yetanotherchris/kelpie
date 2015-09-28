@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
 using Kelpie.Core;
 using Kelpie.Core.Domain;
 using Kelpie.Core.IO;
 using Kelpie.Core.Repository;
+using Kelpie.Web.Models;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 
@@ -26,7 +28,39 @@ namespace Kelpie.Web.Controllers
 
 		public ActionResult Index()
 		{
-			return View();
+			var list = new List<HomepageModel>();
+
+			if (MemoryCache.Default.Contains("dashboard-list"))
+			{
+				list = MemoryCache.Default.Get("dashboard-list") as List<HomepageModel>;
+			}
+			else
+			{
+				foreach (string applicationName in _configuration.Applications.OrderBy(x => x))
+				{
+					List<LogEntry> entries = _repository.GetEntriesThisWeek(applicationName).ToList();
+					var xyz =
+						entries.GroupBy(x => x.ExceptionType).Where(x => !string.IsNullOrEmpty(x.Key)).OrderByDescending(x => x.Count());
+
+					string exceptionType = "";
+					var topItem = xyz.FirstOrDefault();
+					if (topItem != null)
+						exceptionType = topItem.Key;
+
+					var model = new HomepageModel()
+					{
+						Application = applicationName,
+						CommonException = exceptionType,
+						ErrorCount = entries.Count
+					};
+
+					list.Add(model);
+				}
+
+				MemoryCache.Default.Add("dashboard-list", list, DateTimeOffset.UtcNow.AddHours(12));
+			}
+
+			return View(list);
 		}
 
 		public ActionResult Today(string applicationName)
@@ -63,14 +97,6 @@ namespace Kelpie.Web.Controllers
 		{
 			LogEntry entry = _repository.GetEntry(id);
 			return Content(entry.Message.Trim());
-		}
-
-		/// <summary>
-		/// Use for the index page's autocomplete.
-		/// </summary>
-		public ActionResult GetApplications()
-		{
-			return Content(JsonConvert.SerializeObject(_configuration.Applications));
 		}
 	}
 }
