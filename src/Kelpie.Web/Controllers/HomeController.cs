@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Caching;
+using System.Threading.Tasks;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using Kelpie.Core;
 using Kelpie.Core.Domain;
@@ -33,34 +35,47 @@ namespace Kelpie.Web.Controllers
 			if (MemoryCache.Default.Contains("dashboard-list"))
 			{
 				list = MemoryCache.Default.Get("dashboard-list") as List<HomepageModel>;
+				return View(list);
 			}
 			else
 			{
-				foreach (string applicationName in _configuration.Applications.OrderBy(x => x))
+				HostingEnvironment.QueueBackgroundWorkItem((token) =>
 				{
-					List<LogEntry> entries = _repository.GetEntriesThisWeek(applicationName).ToList();
-					var xyz =
-						entries.GroupBy(x => x.ExceptionType).Where(x => !string.IsNullOrEmpty(x.Key)).OrderByDescending(x => x.Count());
-
-					string exceptionType = "";
-					var topItem = xyz.FirstOrDefault();
-					if (topItem != null)
-						exceptionType = topItem.Key;
-
-					var model = new HomepageModel()
+					foreach (string applicationName in _configuration.Applications.OrderBy(x => x))
 					{
-						Application = applicationName,
-						CommonException = exceptionType,
-						ErrorCount = entries.Count
-					};
+						List<LogEntry> entries = _repository.GetEntriesThisWeek(applicationName).ToList();
+						var topException = entries.GroupBy(x => x.ExceptionType)
+												  .Where(x => !string.IsNullOrWhiteSpace(x.Key))
+												  .OrderByDescending(x => x.Count());
 
-					list.Add(model);
-				}
+						string exceptionType = "";
+						var topItem = topException.FirstOrDefault();
+						if (topItem != null)
+							exceptionType = topItem.Key;
 
-				MemoryCache.Default.Add("dashboard-list", list, DateTimeOffset.UtcNow.AddHours(12));
+						var model = new HomepageModel()
+						{
+							Application = applicationName,
+							CommonException = exceptionType,
+							ErrorCount = entries.Count,
+							ErrorCountPerServer = entries.Count / _configuration.ServerPaths.Count(),
+							ServerCount = _configuration.ServerPaths.Count()
+						};
+
+						list.Add(model);
+					}
+
+					MemoryCache.Default.Add("dashboard-list", list, DateTimeOffset.UtcNow.AddHours(12));
+				});
+
+				return View("CrunchingData");
 			}
+		}
 
-			return View(list);
+		public ActionResult GetCacheDataStatus()
+		{
+			bool hasData = MemoryCache.Default.Get("dashboard-list") != null;
+			return Json(hasData, JsonRequestBehavior.AllowGet);
 		}
 
 		public ActionResult Today(string applicationName)

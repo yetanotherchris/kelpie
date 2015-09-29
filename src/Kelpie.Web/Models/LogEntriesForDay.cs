@@ -43,7 +43,7 @@ namespace Kelpie.Web.Models
 			return new LogEntriesForDay()
 			{
 				DayOfWeek = dayOfWeek,
-				LogEntries = entries.Where(x => x.DateTime.DayOfWeek == dateTime.DayOfWeek)
+				LogEntries = entries.Where(x => x.DateTime.DayOfWeek == dateTime.DayOfWeek).Take(20)
 			};
 		}
 	}

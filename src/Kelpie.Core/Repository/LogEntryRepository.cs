@@ -30,9 +30,9 @@ namespace Kelpie.Core.Repository
 			_collection.InsertManyAsync(entries);
 		}
 
-		public void DeleteAll()
+		public async void DeleteAll()
 		{
-			_database.DropCollectionAsync("LogEntry");
+			await _mongoClient.DropDatabaseAsync("Kelpie");
 		}
 
 		public IEnumerable<LogEntry> GetEntriesForApp(string logApplication)

@@ -1,0 +1,40 @@
+﻿@{
+	ViewBag.Title = "Welcome the Kelpie app - preloading data.";
+}
+
+<div class="row">
+	<h3>Crunching log file data</h3>
+	<p>
+		This may take a few minutes.
+	</p>
+
+	<div class="progress">
+		<div class="indeterminate"></div>
+	</div>
+</div>
+
+@section scripts
+{
+	<script type="text/javascript">
+
+		var intervalHandle;
+
+		$(document).ready(function () {
+			intervalHandle = setInterval("getStatus()", 1000);
+		});
+
+		function getStatus() {
+			$.ajax({
+					method: "GET",
+					url: "/Home/GetCacheDataStatus"
+				})
+				.done(function (data) {
+					console.log("GetCacheDataStatus: " + data);
+					if (data === true) {
+						intervalHandle = null;
+						window.location.href = "/";
+					} 
+				});
+		}
+	</script>
+}
