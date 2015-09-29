@@ -28,7 +28,7 @@ Scans NLog *text* log files and displays them in a filterable way in an MVC appl
 1. Count of common exceptions for today and this week
 2. Drill down into common exceptions
 
-### Iteration 2.2
+### Iteration 2.1
 1. Decent configuration from a JSON .config file.
 
 ### Iteration 3
