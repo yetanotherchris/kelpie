@@ -54,22 +54,30 @@ namespace Kelpie.Core.IO
 
 				Parallel.ForEach(logFiles, (file) =>
 				{
-					string directory = Path.GetDirectoryName(file);
+					// Ignore old log files as they bloat the database
+					if (File.GetLastWriteTime(file) >= DateTime.UtcNow.AddDays(-7))
+					{
+						string directory = Path.GetDirectoryName(file);
 
-					// Copy the log file to the %TEMP% directory
-					string appName = Path.GetFileName(directory);
-					string destPath = Path.Combine(tempRoot, appName);
+						// Copy the log file to the %TEMP% directory
+						string appName = Path.GetFileName(directory);
+						string destPath = Path.Combine(tempRoot, appName);
 
-					if (!Directory.Exists(destPath))
-						Directory.CreateDirectory(destPath);
+						if (!Directory.Exists(destPath))
+							Directory.CreateDirectory(destPath);
 
-					Console.WriteLine("- Copying {0} to local disk", file);
-					string destFileName = file.Replace(directory, destPath);
-					File.Copy(file, destFileName, true);
+						Console.WriteLine("- Copying {0} to local disk", file);
+						string destFileName = file.Replace(directory, destPath);
+						File.Copy(file, destFileName, true);
 
-					Console.WriteLine("Parsing {0} ({1})", file, ByteSize.FromBytes(new FileInfo(file).Length).ToString());
-					var parser = new LogFileParser(destFileName, serverName, appName, _repository);
-					parser.ParseAndSave();
+						Console.WriteLine("Parsing {0} ({1})", file, ByteSize.FromBytes(new FileInfo(file).Length).ToString());
+						var parser = new LogFileParser(destFileName, serverName, appName, _repository);
+						parser.ParseAndSave();
+					}
+					else
+					{
+						Console.WriteLine("Ignoring {0} as it's more than 7 days old", file);
+					}
 				});
 			}
 		}

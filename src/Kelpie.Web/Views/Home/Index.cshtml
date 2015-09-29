@@ -12,8 +12,9 @@
 				<div class="card blue-grey small">
 					<div class="card-content white-text">
 						<span class="card-title"><a href="@Url.Action("Today", "Home", new { applicationName = item.Application})">@item.Application</a></span>
-						<div class="new badge">@item.ErrorCount errors this week.</div>
-					@if (!string.IsNullOrEmpty(item.CommonException))
+						<div class="new badge">@item.ErrorCount errors this week on @item.ServerCount servers.</div>
+						<div class="new badge">With an average of @item.ErrorCountPerServer per server.</div>
+					@if (!string.IsNullOrWhiteSpace(item.CommonException))
 					{
 						<br/>
 						<span>
