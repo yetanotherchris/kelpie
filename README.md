@@ -6,7 +6,7 @@ Scans NLog *text* log files and displays them in a filterable way in an MVC appl
 - Make sure you have IIS installed
 - Install MongoDB: https://www.mongodb.org/downloads
 - Create `c:\mongodb\data\db`
-- Run `"C:\Program Files\MongoDB\Server\3.0\bin\mongod.exe" --dbpath c:\mongodb\data\`
+- Run `setupMongoDb.ps1`
   - Or install it as a service: https://docs.mongodb.org/manual/tutorial/install-mongodb-on-windows/#configure-a-windows-service-for-mongodb
 - Run the setup.ps1 script.
 - Update the app.config and web.config files with the servers and applications you want.
