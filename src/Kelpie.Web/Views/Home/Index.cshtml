@@ -9,23 +9,24 @@
 		@foreach (HomepageModel item in Model)
 		{
 			<div class="col s3">
-				<div class="card blue-grey small">
+				<div class="card blue-grey">
 					<div class="card-content white-text">
 						<span class="card-title"><a href="@Url.Action("Today", "Home", new { applicationName = item.Application})">@item.Application</a></span>
 						<div class="new badge">@item.ErrorCount errors this week on @item.ServerCount servers.</div>
 						<div class="new badge">With an average of @item.ErrorCountPerServer per server.</div>
-					@if (!string.IsNullOrWhiteSpace(item.CommonException))
-					{
-						<br/>
-						<span>
-							Commonest exception: <code>@item.CommonException</code>
-						</span>
-					}
+						<div class="top-exception">
+
+							@if (!string.IsNullOrWhiteSpace(item.TopExceptionType))
+							{
+								<span class="label teal darken-4">Top exception:</span><br />
+								<div class="exception-type"><a href="@Url.Action("ExceptionType", "Home", new {applicationName = item.Application, exceptionType = item.TopExceptionType})">@item.TopExceptionType</a></div>
+							}
+						</div>
 					</div>
 					<div class="card-action">
 						<ul>
-							<li><a href="@Url.Action("AllExceptionTypes", "Home", new { applicationName = item.Application})">View common exceptions</a></li>
-							<li><a href="@Url.Action("ThisWeek", "Home", new { applicationName = item.Application})">View this week's logs</a></li>
+							<li><a href="@Url.Action("ThisWeek", "Home", new {applicationName = item.Application})">View this week's logs</a></li>
+							<li><a href="@Url.Action("AllExceptionTypes", "Home", new { applicationName = item.Application})">View top exceptions</a></li>
 						</ul>
 					</div>
 				</div>

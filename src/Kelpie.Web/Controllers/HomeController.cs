@@ -30,46 +30,52 @@ namespace Kelpie.Web.Controllers
 
 		public ActionResult Index()
 		{
-			var list = new List<HomepageModel>();
-
 			if (MemoryCache.Default.Contains("dashboard-list"))
 			{
-				list = MemoryCache.Default.Get("dashboard-list") as List<HomepageModel>;
+				var list = MemoryCache.Default.Get("dashboard-list") as List<HomepageModel>;
 				return View(list);
 			}
 			else
 			{
 				HostingEnvironment.QueueBackgroundWorkItem((token) =>
 				{
-					foreach (string applicationName in _configuration.Applications.OrderBy(x => x))
-					{
-						List<LogEntry> entries = _repository.GetEntriesThisWeek(applicationName).ToList();
-						var topException = entries.GroupBy(x => x.ExceptionType)
-												  .Where(x => !string.IsNullOrWhiteSpace(x.Key))
-												  .OrderByDescending(x => x.Count());
-
-						string exceptionType = "";
-						var topItem = topException.FirstOrDefault();
-						if (topItem != null)
-							exceptionType = topItem.Key;
-
-						var model = new HomepageModel()
-						{
-							Application = applicationName,
-							CommonException = exceptionType,
-							ErrorCount = entries.Count,
-							ErrorCountPerServer = entries.Count / _configuration.Servers.Count(),
-							ServerCount = _configuration.Servers.Count()
-						};
-
-						list.Add(model);
-					}
-
+					List<HomepageModel> list = GetDashboardData();
 					MemoryCache.Default.Add("dashboard-list", list, DateTimeOffset.UtcNow.AddHours(12));
 				});
 
 				return View("CrunchingData");
 			}
+		}
+
+		private List<HomepageModel> GetDashboardData()
+		{
+			var list = new List<HomepageModel>();
+
+			foreach (string applicationName in _configuration.Applications.OrderBy(x => x))
+			{
+				List<LogEntry> entries = _repository.GetEntriesThisWeek(applicationName).ToList();
+				var topException = entries.GroupBy(x => x.ExceptionType)
+					//.Where(x => !string.IsNullOrWhiteSpace(x.Key))
+					.OrderByDescending(x => x.Count());
+
+				string exceptionType = "";
+				var topItem = topException.FirstOrDefault();
+				if (topItem != null)
+					exceptionType = topItem.Key;
+
+				var model = new HomepageModel()
+				{
+					Application = applicationName,
+					TopExceptionType = exceptionType,
+					ErrorCount = entries.Count,
+					ErrorCountPerServer = entries.Count/_configuration.Servers.Count(),
+					ServerCount = _configuration.Servers.Count()
+				};
+
+				list.Add(model);
+			}
+
+			return list;
 		}
 
 		public ActionResult GetCacheDataStatus()
