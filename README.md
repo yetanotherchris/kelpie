@@ -6,7 +6,7 @@ Scans NLog *text* log files and displays them in a filterable way in an MVC appl
 - Make sure you have IIS installed
 - Install MongoDB: https://www.mongodb.org/downloads
 - Create `c:\mongodb\data\db`
-- Run `"C:\Program Files\MongoDB\Server\3.0\bin\mongod.exe" --dbpath c:\mongodb\data\`
+- Run `setupMongoDb.ps1`
   - Or install it as a service: https://docs.mongodb.org/manual/tutorial/install-mongodb-on-windows/#configure-a-windows-service-for-mongodb
 - Run the setup.ps1 script.
 - Update the app.config and web.config files with the servers and applications you want.
@@ -14,19 +14,22 @@ Scans NLog *text* log files and displays them in a filterable way in an MVC appl
 
 ## Roadmap
 
-### Iteration 1
+### Iteration 1 (Done)
 1. Reads all files from directories (using async)
 2. Table of logs for today
 3. Table of logs for this week
 4. Show error messages in detail
 5. Rescan all logs
 
-### Iteration 1.1
+### Iteration 1.1 (Done)
 1. Remove RavenDB and put MongoDB there.
 
-### Iteration 2
+### Iteration 2 (Done)
 1. Count of common exceptions for today and this week
 2. Drill down into common exceptions
+
+### Iteration 2.1
+1. Decent configuration from a JSON .config file.
 
 ### Iteration 3
 1. Search messages
