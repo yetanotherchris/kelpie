@@ -85,7 +85,7 @@ namespace Kelpie.Core.Repository
 			var items =
 				_collection.AsQueryable<LogEntry>()
 					.Where(x => x.ApplicationName.Equals(logApplication) 
-							&& x.DateTime > DateTime.Today.AddDays(_configuration.MaxAgeDays) 
+							&& x.DateTime > DateTime.Today.AddDays(- _configuration.MaxAgeDays) 
 							&& x.ExceptionType == exceptionType);
 
 			return items.ToList().OrderByDescending(x => x.DateTime);
