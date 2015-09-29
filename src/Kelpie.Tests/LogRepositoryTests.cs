@@ -21,7 +21,7 @@ namespace Kelpie.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			CreateRepository().DeleteAll();
+			CreateRepository().DeleteCollection("LogEntry");
         }
 
 		[Test]

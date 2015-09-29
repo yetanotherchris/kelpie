@@ -30,9 +30,20 @@ namespace Kelpie.Core.Repository
 			_collection.InsertManyAsync(entries);
 		}
 
-		public async void DeleteAll()
+		public void DeleteAll()
 		{
-			await _mongoClient.DropDatabaseAsync("Kelpie");
+			// This should be used for imports, to ensure the data directory doesn't bloat.
+			DropDatabase("Kelpie");
+		}
+
+		public async void DropDatabase(string databaseName = "Kelpie")
+		{
+			await _mongoClient.DropDatabaseAsync(databaseName);
+		}
+
+		public void DeleteCollection(string collectionName = "Kelpie")
+		{
+			_database.DropCollectionAsync(collectionName);
 		}
 
 		public IEnumerable<LogEntry> GetEntriesForApp(string logApplication)
