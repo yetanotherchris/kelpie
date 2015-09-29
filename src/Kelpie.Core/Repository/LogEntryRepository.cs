@@ -10,12 +10,14 @@ namespace Kelpie.Core.Repository
 	public class LogEntryRepository : ILogEntryRepository
 	{
 		private readonly MongoClient _mongoClient;
+		private readonly IConfiguration _configuration;
 		private readonly IMongoDatabase _database;
 		private readonly IMongoCollection<LogEntry> _collection;
 
-		public LogEntryRepository(MongoClient mongoClient, string databaseName = "Kelpie")
+		public LogEntryRepository(MongoClient mongoClient, IConfiguration configuration, string databaseName = "Kelpie")
 		{
 			_mongoClient = mongoClient;
+			_configuration = configuration;
 			_database = _mongoClient.GetDatabase(databaseName);
 			_collection = _database.GetCollection<LogEntry>("LogEntry");
 		}
@@ -82,7 +84,9 @@ namespace Kelpie.Core.Repository
 		{
 			var items =
 				_collection.AsQueryable<LogEntry>()
-					.Where(x => x.ApplicationName.Equals(logApplication) && x.DateTime > DateTime.Today.AddDays(-7) && x.ExceptionType == exceptionType);
+					.Where(x => x.ApplicationName.Equals(logApplication) 
+							&& x.DateTime > DateTime.Today.AddDays(_configuration.MaxAgeDays) 
+							&& x.ExceptionType == exceptionType);
 
 			return items.ToList().OrderByDescending(x => x.DateTime);
 		}

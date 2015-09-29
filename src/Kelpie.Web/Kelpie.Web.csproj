@@ -62,6 +62,10 @@
       <HintPath>..\..\packages\MongoDB.Driver.Core.2.1.0-rc0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
@@ -126,11 +130,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -148,6 +147,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="img\dog.png" />
     <Content Include="img\refreshing.gif" />
+    <None Include="example-config.json" />
     <Content Include="Scripts\expand-messages.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
@@ -194,6 +194,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\CrunchingData.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="kelpie.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

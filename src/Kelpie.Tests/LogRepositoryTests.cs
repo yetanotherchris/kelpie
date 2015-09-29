@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Kelpie.Core;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Repository;
+using Kelpie.Tests.MocksStubs;
 using MongoDB.Driver;
 using NUnit.Framework;
 
@@ -13,16 +14,20 @@ namespace Kelpie.Tests
 {
 	public class LogRepositoryTests
 	{
-		private LogEntryRepository CreateRepository()
-		{
-			return new LogEntryRepository(new MongoClient(), "Kelpie-tests");
-		}
+		private ConfigurationStub _configuration;
 
 		[SetUp]
 		public void SetUp()
 		{
+			_configuration = new ConfigurationStub();
+			_configuration.MaxAgeDays = 99;
 			CreateRepository().DeleteCollection("LogEntry");
         }
+
+		private LogEntryRepository CreateRepository()
+		{
+			return new LogEntryRepository(new MongoClient(), _configuration, "Kelpie-tests");
+		}
 
 		[Test]
 		public void should_save_entry()

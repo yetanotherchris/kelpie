@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Repository;
 
-namespace Kelpie.Tests
+namespace Kelpie.Tests.MocksStubs
 {
 	public class RepositoryMock : ILogEntryRepository
 	{

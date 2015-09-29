@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using Kelpie.Core.Domain;
 
 namespace Kelpie.Core
 {
 	public interface IConfiguration
 	{
-		IEnumerable<string> Applications { get; }
-		IEnumerable<string> ServerPaths { get; }
-		string ServerUsername { get; set; }
+		string ConfigFile { get; set; }
+		List<string> Applications { get; set; }
+		List<Server> Servers { get; set; }
+		int ImportBufferCount { get; set; }
+		int PageSize { get; set; }
+		int MaxAgeDays { get; set; }
 	}
 }

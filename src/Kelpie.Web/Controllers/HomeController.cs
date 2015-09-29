@@ -20,12 +20,12 @@ namespace Kelpie.Web.Controllers
 	public class HomeController : Controller
 	{
 		private readonly LogEntryRepository _repository;
-		private readonly Configuration _configuration;
+		private readonly IConfiguration _configuration;
 
 		public HomeController()
 		{
-			_configuration = new Configuration();
-			_repository = new LogEntryRepository(new MongoClient());
+			_configuration = Configuration.Read();
+			_repository = new LogEntryRepository(new MongoClient(), _configuration);
 		}
 
 		public ActionResult Index()
@@ -58,8 +58,8 @@ namespace Kelpie.Web.Controllers
 							Application = applicationName,
 							CommonException = exceptionType,
 							ErrorCount = entries.Count,
-							ErrorCountPerServer = entries.Count / _configuration.ServerPaths.Count(),
-							ServerCount = _configuration.ServerPaths.Count()
+							ErrorCountPerServer = entries.Count / _configuration.Servers.Count(),
+							ServerCount = _configuration.Servers.Count()
 						};
 
 						list.Add(model);

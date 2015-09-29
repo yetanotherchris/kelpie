@@ -1,10 +1,11 @@
-namespace Kelpie.Core.Domain
+﻿namespace Kelpie.Core.Domain
 {
 	public class Server
 	{
-		// e.g tjgtrlwsx401t
 		public string Name { get; set; }
-
-		// Last update datetime for each app
+		public string Path { get; set; }
+		public bool CopyFilesToLocal { get; set; }
+		public string Username { get; set; }
+		public string Password { get; set; }
 	}
 }

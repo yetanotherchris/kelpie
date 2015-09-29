@@ -1,0 +1,19 @@
+﻿{
+	/* Rename this file to kelpie.config */
+	"ConfigFile": "",
+	"Applications": [
+		"App1"
+	],
+	"Servers": [
+		{
+			"Name": "ricecakes",
+			"Path": "D:\\Errorlogs",
+			"CopyFilesToLocal": false,
+			"Username": null,
+			"Password": null
+		}
+	],
+	"ImportBufferCount": 100,
+	"PageSize": 20,
+	"MaxAgeDays": 7
+}
