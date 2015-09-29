@@ -117,7 +117,7 @@ namespace Kelpie.Web.Controllers
 		public ActionResult LoadMessage(Guid id)
 		{
 			LogEntry entry = _repository.GetEntry(id);
-			return Content(entry.Message.Trim());
+			return Content(HttpUtility.HtmlEncode(entry.Message.Trim()));
 		}
 	}
 }
