@@ -14,19 +14,22 @@ Scans NLog *text* log files and displays them in a filterable way in an MVC appl
 
 ## Roadmap
 
-### Iteration 1
+### Iteration 1 (Done)
 1. Reads all files from directories (using async)
 2. Table of logs for today
 3. Table of logs for this week
 4. Show error messages in detail
 5. Rescan all logs
 
-### Iteration 1.1
+### Iteration 1.1 (Done)
 1. Remove RavenDB and put MongoDB there.
 
-### Iteration 2
+### Iteration 2 (Done)
 1. Count of common exceptions for today and this week
 2. Drill down into common exceptions
+
+### Iteration 2.2
+1. Decent configuration from a JSON .config file.
 
 ### Iteration 3
 1. Search messages
