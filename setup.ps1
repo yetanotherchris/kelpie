@@ -49,5 +49,4 @@ else
 Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" -ForegroundColor DarkYellow
 Write-Host "Setup complete." -ForegroundColor Green
 Write-host "- Site: http://localhost:410/"
-Write-Host "- RavenDB dashboard : http://localhost:411/"
 Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" -ForegroundColor DarkYellow
