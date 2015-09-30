@@ -12,6 +12,9 @@ namespace Kelpie.Core.Repository
 		IEnumerable<LogEntry> GetEntriesForApp(string logApplication);
 		IEnumerable<LogEntry> GetEntriesToday(string applicationName);
 		IEnumerable<LogEntry> GetEntriesThisWeek(string logApplication);
-		LogEntry GetEntry(Guid id);
+
+	    IEnumerable<LogEntry> GetFilterEntriesForApp(LogEntryFilter filter);
+
+        LogEntry GetEntry(Guid id);
 	}
 }

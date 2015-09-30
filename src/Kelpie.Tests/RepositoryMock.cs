@@ -44,7 +44,12 @@ namespace Kelpie.Tests
 			yield break;
 		}
 
-		public LogEntry GetEntry(Guid id)
+	    public IEnumerable<LogEntry> GetFilterEntriesForApp(LogEntryFilter filter)
+	    {
+            yield break;
+        }
+
+	    public LogEntry GetEntry(Guid id)
 		{
 			return null;
 		}

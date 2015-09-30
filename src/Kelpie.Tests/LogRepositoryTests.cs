@@ -11,147 +11,175 @@ using NUnit.Framework;
 
 namespace Kelpie.Tests
 {
-	public class LogRepositoryTests
-	{
-		private LogEntryRepository CreateRepository()
-		{
-			return new LogEntryRepository(new MongoClient(), "Kelpie-tests");
-		}
-
-		[SetUp]
-		public void SetUp()
-		{
-			CreateRepository().DeleteAll();
+    public class LogRepositoryTests
+    {
+        private LogEntryRepository CreateRepository()
+        {
+            return new LogEntryRepository(new MongoClient(), "Kelpie-tests");
         }
 
-		[Test]
-		public void should_save_entry()
-		{
-			// Arrange
-			string logApplication = "FooApp";
+        [SetUp]
+        public void SetUp()
+        {
+            CreateRepository().DeleteAll();
+        }
+
+        [Test]
+        public void should_save_entry()
+        {
+            // Arrange
+            string logApplication = "FooApp";
 
             var repository = CreateRepository();
-			var entry = CreatLogEntry(logApplication, "crap");
+            var entry = CreatLogEntry(logApplication, "crap");
 
-			// Act
-			repository.Save(entry);
+            // Act
+            repository.Save(entry);
 
-			// Assert
-			IEnumerable<LogEntry> entries = repository.GetEntriesForApp(logApplication);
-			Assert.That(entries.Count(), Is.EqualTo(1));
-		}
+            // Assert
+            IEnumerable<LogEntry> entries = repository.GetEntriesForApp(logApplication);
+            Assert.That(entries.Count(), Is.EqualTo(1));
+        }
 
-		[Test]
-		public void should_load_entry_for_application()
-		{
-			// Arrange
-			string logApplication = "FooApp";
+        [Test]
+        public void should_load_entry_for_application()
+        {
+            // Arrange
+            string logApplication = "FooApp";
 
-			var repository = CreateRepository();
-			var entry1 = CreatLogEntry(logApplication, "crap1");
-			var entry2 = CreatLogEntry(logApplication, "crap2");
-			repository.Save(entry1);
-			repository.Save(entry2);
+            var repository = CreateRepository();
+            var entry1 = CreatLogEntry(logApplication, "crap1");
+            var entry2 = CreatLogEntry(logApplication, "crap2");
+            repository.Save(entry1);
+            repository.Save(entry2);
 
-			// Act
-			IEnumerable<LogEntry> entries = repository.GetEntriesForApp(logApplication);
+            // Act
+            IEnumerable<LogEntry> entries = repository.GetEntriesForApp(logApplication);
 
-			// Assert
-			Assert.That(entries.Count(), Is.EqualTo(2));
-		}
+            // Assert
+            Assert.That(entries.Count(), Is.EqualTo(2));
+        }
 
-		[Test]
-		public void should_not_load_entry_for_different_application()
-		{
-			// Arrange
-			string fooApp = "FooApp";
-			string barApp = "Bar"; 
+        [Test]
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 2, 2)]
+        [TestCase(2, 1, 1)]
+        [TestCase(1, 10, 2)]
+        [TestCase(2, 10, 0)]
+        public void should_load_entry_for_application_paged(int page, int rows, int expectedResults)
+        {
+            // Arrange
+            string logApplication = "FooApp";
 
-			var repository = CreateRepository();
-			var entry1 = CreatLogEntry(fooApp, "crap1");
-			var entry2 = CreatLogEntry(fooApp, "crap2");
-			repository.Save(entry1);
-			repository.Save(entry2);
+            var repository = CreateRepository();
+            AddEntryToLog(repository, logApplication, "crap1");
+            AddEntryToLog(repository, logApplication, "crap2");
 
-			// Act
-			IEnumerable<LogEntry> entries = repository.GetEntriesForApp(barApp);
+            // Act
+            IEnumerable<LogEntry> entries = repository.GetFilterEntriesForApp(new LogEntryFilter() { LogApplication = logApplication, Page = page, Rows = rows });
 
-			// Assert
-			Assert.That(entries.Count(), Is.EqualTo(0));
-		}
+            // Assert
+            Assert.That(entries.Count(), Is.EqualTo(expectedResults));
+        }
 
-		[Test]
-		public void should_load_entries_for_today()
-		{
-			// Arrange
-			string logApplication = "FooApp";
+        [Test]
+        public void should_not_load_entry_for_different_application()
+        {
+            // Arrange
+            string fooApp = "FooApp";
+            string barApp = "Bar";
 
-			var repository = CreateRepository();
-			var entry1 = CreatLogEntry(logApplication, "today");
-			entry1.DateTime = DateTime.Now;
+            var repository = CreateRepository();
+            var entry1 = CreatLogEntry(fooApp, "crap1");
+            var entry2 = CreatLogEntry(fooApp, "crap2");
+            repository.Save(entry1);
+            repository.Save(entry2);
 
-			var entry2 = CreatLogEntry(logApplication, "today");
-			entry2.DateTime = DateTime.Now;
+            // Act
+            IEnumerable<LogEntry> entries = repository.GetEntriesForApp(barApp);
 
-			var entry3 = CreatLogEntry(logApplication, "yesterday");
-			entry3.DateTime = DateTime.Now.AddDays(-1);
+            // Assert
+            Assert.That(entries.Count(), Is.EqualTo(0));
+        }
 
-			var entry4 = CreatLogEntry(logApplication, "2 days ago");
-			entry4.DateTime = DateTime.Now.AddDays(-2);
+        [Test]
+        public void should_load_entries_for_today()
+        {
+            // Arrange
+            string logApplication = "FooApp";
 
-			repository.Save(entry1);
-			repository.Save(entry2);
-			repository.Save(entry3);
-			repository.Save(entry4);
+            var repository = CreateRepository();
+            var entry1 = CreatLogEntry(logApplication, "today");
+            entry1.DateTime = DateTime.Now;
 
-			// Act
-			IEnumerable<LogEntry> entries = repository.GetEntriesToday(logApplication);
+            var entry2 = CreatLogEntry(logApplication, "today");
+            entry2.DateTime = DateTime.Now;
 
-			// Assert
-			Assert.That(entries.Count(), Is.EqualTo(2));
-		}
+            var entry3 = CreatLogEntry(logApplication, "yesterday");
+            entry3.DateTime = DateTime.Now.AddDays(-1);
 
-		[Test]
-		public void should_load_entries_for_this_week()
-		{
-			// Arrange
-			string logApplication = "FooApp";
+            var entry4 = CreatLogEntry(logApplication, "2 days ago");
+            entry4.DateTime = DateTime.Now.AddDays(-2);
 
-			var repository = CreateRepository();
-			var entry1 = CreatLogEntry(logApplication, "today");
-			entry1.DateTime = DateTime.Now;
+            repository.Save(entry1);
+            repository.Save(entry2);
+            repository.Save(entry3);
+            repository.Save(entry4);
 
-			var entry2 = CreatLogEntry(logApplication, "this time last week");
-			entry2.DateTime = DateTime.Now.AddDays(-7);
+            // Act
+            IEnumerable<LogEntry> entries = repository.GetEntriesToday(logApplication);
 
-			var entry3 = CreatLogEntry(logApplication, "yesterday");
-			entry3.DateTime = DateTime.Now.AddDays(-1);
+            // Assert
+            Assert.That(entries.Count(), Is.EqualTo(2));
+        }
 
-			var entry4 = CreatLogEntry(logApplication, "8 days ago");
-			entry4.DateTime = DateTime.Now.AddDays(-8);
+        [Test]
+        public void should_load_entries_for_this_week()
+        {
+            // Arrange
+            string logApplication = "FooApp";
 
-			repository.Save(entry1);
-			repository.Save(entry2);
-			repository.Save(entry3);
-			repository.Save(entry4);
+            var repository = CreateRepository();
+            var entry1 = CreatLogEntry(logApplication, "today");
+            entry1.DateTime = DateTime.Now;
 
-			// Act
-			IEnumerable<LogEntry> entries = repository.GetEntriesThisWeek(logApplication);
+            var entry2 = CreatLogEntry(logApplication, "this time last week");
+            entry2.DateTime = DateTime.Now.AddDays(-7);
 
-			// Assert
-			Assert.That(entries.Count(), Is.EqualTo(3));
-		}
+            var entry3 = CreatLogEntry(logApplication, "yesterday");
+            entry3.DateTime = DateTime.Now.AddDays(-1);
 
-		private LogEntry CreatLogEntry(string application, string message)
-		{
-			return new LogEntry()
-			{
-				DateTime = DateTime.UtcNow,
-				Source = "FooAppLogger",
-				Level = "Error",
-				ApplicationName = application,
-				Message = message
-			};
-		}
-	}
+            var entry4 = CreatLogEntry(logApplication, "8 days ago");
+            entry4.DateTime = DateTime.Now.AddDays(-8);
+
+            repository.Save(entry1);
+            repository.Save(entry2);
+            repository.Save(entry3);
+            repository.Save(entry4);
+
+            // Act
+            IEnumerable<LogEntry> entries = repository.GetEntriesThisWeek(logApplication);
+
+            // Assert
+            Assert.That(entries.Count(), Is.EqualTo(3));
+        }
+
+        private LogEntry CreatLogEntry(string application, string message)
+        {
+            return new LogEntry()
+            {
+                DateTime = DateTime.UtcNow,
+                Source = "FooAppLogger",
+                Level = "Error",
+                ApplicationName = application,
+                Message = message
+            };
+        }
+
+        private void AddEntryToLog(LogEntryRepository repository, string logApplication, string logEntryMessage)
+        {
+            var entry1 = CreatLogEntry(logApplication, logEntryMessage);
+            repository.Save(entry1);
+        }
+    }
 }

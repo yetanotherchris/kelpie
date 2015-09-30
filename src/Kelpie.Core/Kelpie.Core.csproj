@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="Domain\LogEntry.cs" />
+    <Compile Include="Domain\LogEntryFilter.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="IO\PinvokeWindowsNetworking.cs" />
     <Compile Include="Parser\LogFileParser.cs" />
