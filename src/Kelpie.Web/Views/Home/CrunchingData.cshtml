@@ -1,5 +1,6 @@
-﻿@{
-	ViewBag.Title = "Welcome the Kelpie app - preloading data.";
+﻿@model HomepageViewModel
+@{
+	ViewBag.Title = "Preloading dashboard data.";
 }
 
 <div class="row">
@@ -26,14 +27,14 @@
 		function getStatus() {
 			$.ajax({
 					method: "GET",
-					url: "/Home/GetCacheDataStatus"
+					url: "/Home/GetCacheDataStatus",
 				})
 				.done(function (data) {
 					console.log("GetCacheDataStatus: " + data);
 					if (data === true) {
 						intervalHandle = null;
 						window.location.href = "/";
-					} 
+					}
 				});
 		}
 	</script>

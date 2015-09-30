@@ -18,7 +18,7 @@ namespace Kelpie.Tests
 	    {
 		    // Arrange
 			var repository = new RepositoryMock();
-            var logFileParser = new LogFileParser("ExampleLogs/empty.log", "local", "Sand", repository);
+            var logFileParser = new LogFileParser("ExampleLogs/empty.log", "server", "appname", "environment", repository);
 
 			// Act
 			logFileParser.ParseAndSave();
@@ -35,7 +35,7 @@ namespace Kelpie.Tests
 			// Arrange
 			var repository = new RepositoryMock();
 			DateTime expectedDate = DateTime.Parse("2015-09-24 10:25:13.7780");
-            var logFileParser = new LogFileParser("ExampleLogs/full.log", "local", "Sand", repository);
+            var logFileParser = new LogFileParser("ExampleLogs/full.log", "server", "appname", "environment", repository);
 
 			// Act
 			logFileParser.ParseAndSave();
@@ -47,8 +47,9 @@ namespace Kelpie.Tests
 
 			var entry = list.FirstOrDefault();
 			Assert.That(entry.DateTime, Is.EqualTo(expectedDate));
-			Assert.That(entry.ApplicationName, Is.EqualTo("Sand"));
-			Assert.That(entry.Server, Is.EqualTo("local"));
+			Assert.That(entry.ApplicationName, Is.EqualTo("appname"));
+			Assert.That(entry.Server, Is.EqualTo("server"));
+			Assert.That(entry.Environment, Is.EqualTo("environment"));
 			Assert.That(entry.Source, Is.EqualTo("AmazingApp"));
 			Assert.That(entry.Message, Is.EqualTo("A non critical error occured on Page:http://www.example.com/Places/To/Buy/Caravans/WestLondon.html\r\n"));
 		}
@@ -58,7 +59,7 @@ namespace Kelpie.Tests
 		{
 			// Arrange
 			var repository = new RepositoryMock();
-			var logFileParser = new LogFileParser("ExampleLogs/full.log", "local", "Sand", repository);
+			var logFileParser = new LogFileParser("ExampleLogs/full.log", "server", "appname", "environment", repository);
 
 			// Act
 			logFileParser.ParseAndSave();

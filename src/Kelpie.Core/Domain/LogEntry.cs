@@ -15,6 +15,7 @@ namespace Kelpie.Core.Domain
 
 		public string ApplicationName { get; set; }
 		public string Server { get; set; }
+		public string Environment { get; set; }
 
 		[BsonIgnore]
 		public string TruncatedMessage

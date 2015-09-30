@@ -48,43 +48,50 @@ namespace Kelpie.Core.Repository
 			_database.DropCollectionAsync(collectionName);
 		}
 
-		public IEnumerable<LogEntry> GetEntriesForApp(string logApplication)
+		public IEnumerable<LogEntry> GetEntriesForApp(string environment, string applicationName)
 		{
-            return _collection.AsQueryable<LogEntry>().Where(x => x.ApplicationName.Equals(logApplication));
+            return _collection.AsQueryable<LogEntry>().Where(x => x.Environment.Equals(environment)
+																&& x.ApplicationName.Equals(applicationName));
 		}
 
-		public IEnumerable<LogEntry> GetEntriesToday(string applicationName)
+		public IEnumerable<LogEntry> GetEntriesToday(string environment, string applicationName)
 		{
-			var items = _collection.AsQueryable<LogEntry>().Where(x => x.ApplicationName.Equals(applicationName) && x.DateTime > DateTime.Today);
+			var items = _collection.AsQueryable<LogEntry>().Where(x => x.Environment.Equals(environment)
+																		&& x.ApplicationName.Equals(applicationName) 
+																		&& x.DateTime > DateTime.Today);
 
 			return items.ToList().OrderByDescending(x => x.DateTime);
 		}
 
-		public IEnumerable<LogEntry> GetEntriesThisWeek(string logApplication)
+		public IEnumerable<LogEntry> GetEntriesThisWeek(string environment, string applicationName)
 		{
 			var items =
 				_collection.AsQueryable<LogEntry>()
-					.Where(x => x.ApplicationName.Equals(logApplication) && x.DateTime > DateTime.Today.AddDays(-7));
+					.Where(x => x.Environment.Equals(environment)
+								&& x.ApplicationName.Equals(applicationName) 
+								&& x.DateTime > DateTime.Today.AddDays(-7));
 
 			return items.ToList().OrderByDescending(x => x.DateTime);
 		}
 
-		public IEnumerable<IGrouping<string,LogEntry>> GetEntriesThisWeekGroupedByException(string logApplication)
+		public IEnumerable<IGrouping<string,LogEntry>> GetEntriesThisWeekGroupedByException(string environment, string applicationName)
 		{
 			var items =
 				_collection.AsQueryable<LogEntry>()
-					.Where(x => x.ApplicationName.Equals(logApplication)
+					.Where(x => x.Environment.Equals(environment)
+							&& x.ApplicationName.Equals(applicationName)
 							&& x.DateTime > DateTime.Today.AddDays(-7) 
 							&& !string.IsNullOrEmpty(x.ExceptionType));
 
 			return items.ToList().GroupBy(x => x.ExceptionType).OrderByDescending(x => x.Count()); // make sure to call ToList, or the groupby fails
 		}
 
-		public IEnumerable<LogEntry> FindByExceptionType(string logApplication, string exceptionType)
+		public IEnumerable<LogEntry> FindByExceptionType(string environment, string applicationName, string exceptionType)
 		{
 			var items =
 				_collection.AsQueryable<LogEntry>()
-					.Where(x => x.ApplicationName.Equals(logApplication) 
+					.Where(x => x.Environment.Equals(environment)
+							&& x.ApplicationName.Equals(applicationName) 
 							&& x.DateTime > DateTime.Today.AddDays(- _configuration.MaxAgeDays) 
 							&& x.ExceptionType == exceptionType);
 

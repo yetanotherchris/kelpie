@@ -8,6 +8,7 @@ using ByteSizeLib;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Parser;
 using Kelpie.Core.Repository;
+using Environment = Kelpie.Core.Domain.Environment;
 
 namespace Kelpie.Core.IO
 {
@@ -24,19 +25,22 @@ namespace Kelpie.Core.IO
 
 		public void ScanLogDirectoriesAndAdd()
 		{
-			foreach (Server server in _configuration.Servers)
+			foreach (Environment environment in _configuration.Environments)
 			{
-				if (!string.IsNullOrEmpty(server.Username))
+				foreach (Server server in environment.Servers)
 				{
-					// Net use the server
-					PinvokeWindowsNetworking.ConnectToRemote(server.Path, server.Username, server.Password);
-				}
+					if (!string.IsNullOrEmpty(server.Username))
+					{
+						// Net use the server
+						PinvokeWindowsNetworking.ConnectToRemote(server.Path, server.Username, server.Password);
+					}
 
-				AddLogsForServer(server);
+					AddLogsForServer(environment.Name, server);
+				}
 			}
 		}
 
-		private void AddLogsForServer(Server server)
+		private void AddLogsForServer(string environment, Server server)
 		{
 			Console.WriteLine("- Search for all .log files in {0}", server.Path);
 			IEnumerable<string> logFiles = Directory.EnumerateFiles(server.Path, "*.log", SearchOption.AllDirectories);
@@ -70,7 +74,7 @@ namespace Kelpie.Core.IO
 						}
 
 						Console.WriteLine("Parsing {0} ({1})", file, ByteSize.FromBytes(new FileInfo(file).Length).ToString());
-						var parser = new LogFileParser(destFileName, server.Name, appName, _repository);
+						var parser = new LogFileParser(destFileName, server.Name, appName, environment, _repository);
 						parser.ParseAndSave();
 					}
 					else

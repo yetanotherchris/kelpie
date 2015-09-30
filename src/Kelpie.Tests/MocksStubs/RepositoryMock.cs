@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Repository;
 
@@ -29,19 +30,29 @@ namespace Kelpie.Tests.MocksStubs
 			LogEntries = new List<LogEntry>();
         }
 
-		public IEnumerable<LogEntry> GetEntriesForApp(string logApplication)
+		public IEnumerable<LogEntry> GetEntriesForApp(string environment, string applicationName)
 		{
-			yield break;
+			return null;
 		}
 
-		public IEnumerable<LogEntry> GetEntriesToday(string applicationName)
+		public IEnumerable<LogEntry> GetEntriesToday(string environment, string applicationName)
 		{
-			yield break;
+			return null;
 		}
 
-		public IEnumerable<LogEntry> GetEntriesThisWeek(string logApplication)
+		public IEnumerable<LogEntry> GetEntriesThisWeek(string environment, string applicationName)
 		{
-			yield break;
+			return null;
+		}
+
+		public IEnumerable<IGrouping<string, LogEntry>> GetEntriesThisWeekGroupedByException(string environment, string applicationName)
+		{
+			return null;
+		}
+
+		public IEnumerable<LogEntry> FindByExceptionType(string environment, string applicationName, string exceptionType)
+		{
+			return null;
 		}
 
 		public LogEntry GetEntry(Guid id)
