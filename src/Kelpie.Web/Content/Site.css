@@ -6,9 +6,12 @@
 .autocomplete-group { padding: 2px 5px; }
 .autocomplete-group strong { font-weight: bold; font-size: 16px; color: #000; display: block; border-bottom: 1px solid #000; }
 
+.lozenge { background-color: #abb7c2;color: white;padding: 5px;border-radius: 5px;}
+
 input#applicationName { border: 1px solid black;padding: 10px;font-size: 24pt; }
 
 h4.dayofweek { color: #708090; }
+
 table.errors .error-time {
 	font-weight: 500;
 }

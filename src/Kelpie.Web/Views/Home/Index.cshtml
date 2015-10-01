@@ -1,13 +1,32 @@
-﻿@model IEnumerable<HomepageModel>
+﻿@model HomepageViewModel
 @{
 	ViewBag.Title = "Welcome the Kelpie app.";
 }
 
-<div class="row">
-	<h3>Applications</h3>
-	<div class="row" id="dashboard">
-		@foreach (HomepageModel item in Model)
+@section AdditionalNav
+{
+	<li>
+		<a class="dropdown-button" href="#!" data-activates="dropdown1">Environment<i class="material-icons right">arrow_drop_down</i></a>
+	</li>
+
+	<!-- Dropdown Structure -->
+	<ul id="dropdown1" class="dropdown-content">
+		@foreach (string environment in Model.Environments)
 		{
+			<li>
+				<a href="@Url.Action("Index", "Home", new {environmentName = environment})">@environment</a>
+			</li>
+		}
+	</ul>
+}
+
+<div class="row">
+	<h3>@Model.CurrentEnvironment</h3>
+
+
+	<div class="row" id="dashboard">
+		@foreach (ServerViewModel item in Model.ServerModels)
+			{
 			<div class="col s3">
 				<div class="card blue-grey">
 					<div class="card-content white-text">
@@ -31,6 +50,6 @@
 					</div>
 				</div>
 			</div>
-		}
+			}
 	</div>
 </div>

@@ -1,11 +1,16 @@
-﻿namespace Kelpie.Web.Models
+﻿using System.Collections.Generic;
+
+namespace Kelpie.Web.Models
 {
-	public class HomepageModel
+	public class HomepageViewModel
 	{
-		public string Application { get; set; }
-		public int ErrorCount { get; set; }
-		public int ErrorCountPerServer { get; set; }
-		public string TopExceptionType { get; set; }
-		public int ServerCount { get; set; }
+		public string CurrentEnvironment { get; set; }
+		public IEnumerable<string> Environments { get; set; }
+		public List<ServerViewModel> ServerModels { get; set; }
+
+		public HomepageViewModel()
+		{
+			ServerModels = new List<ServerViewModel>();
+		}
 	}
 }

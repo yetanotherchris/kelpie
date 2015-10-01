@@ -14,6 +14,7 @@ using Kelpie.Core.Repository;
 using Kelpie.Web.Models;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using Environment = Kelpie.Core.Domain.Environment;
 
 namespace Kelpie.Web.Controllers
 {
@@ -30,32 +31,65 @@ namespace Kelpie.Web.Controllers
 
 		public ActionResult Index()
 		{
-			if (MemoryCache.Default.Contains("dashboard-list"))
+            Environment selectedEnvironment = GetSelectedEnvironment();
+			Response.Cookies.Add(new HttpCookie("environmentName", selectedEnvironment.Name));
+
+			var homepageModel = new HomepageViewModel();
+			homepageModel.Environments = _configuration.Environments.Select(x => x.Name);
+			homepageModel.CurrentEnvironment = selectedEnvironment.Name;
+
+			string cacheKey = GetCacheKey();
+
+			if (MemoryCache.Default.Contains(cacheKey))
 			{
-				var list = MemoryCache.Default.Get("dashboard-list") as List<HomepageModel>;
-				return View(list);
+				List<ServerViewModel> list = MemoryCache.Default.Get(cacheKey) as List<ServerViewModel>;
+				homepageModel.ServerModels = list;
+
+				return View(homepageModel);
 			}
 			else
 			{
 				HostingEnvironment.QueueBackgroundWorkItem((token) =>
 				{
-					List<HomepageModel> list = GetDashboardData();
-					MemoryCache.Default.Add("dashboard-list", list, DateTimeOffset.UtcNow.AddHours(12));
+					List<ServerViewModel> list = GetDashboardData(selectedEnvironment);
+					homepageModel.ServerModels = list;
+					MemoryCache.Default.Add(cacheKey, list, DateTimeOffset.MaxValue);
 				});
 
-				return View("CrunchingData");
+				return View("CrunchingData", homepageModel);
 			}
 		}
 
-		private List<HomepageModel> GetDashboardData()
+		private string GetCacheKey()
 		{
-			var list = new List<HomepageModel>();
+			return string.Format("kelpie.dashboard.{0}", GetSelectedEnvironment().Name);
+		}
+
+		private Environment GetSelectedEnvironment()
+		{
+			string environmentName = Request.QueryString["environmentName"];
+				
+			if (string.IsNullOrEmpty(environmentName))
+				environmentName = Request.Cookies["environmentName"]?.Value;
+
+            Environment selectedEnvironment = null;
+			if (!string.IsNullOrEmpty(environmentName))
+				selectedEnvironment = _configuration.Environments.First(x => x.Name.Equals(environmentName, StringComparison.InvariantCultureIgnoreCase));
+
+			if (selectedEnvironment == null)
+				selectedEnvironment = _configuration.Environments.First();
+
+			return selectedEnvironment;
+		}
+
+		private List<ServerViewModel> GetDashboardData(Environment environment)
+		{
+			var list = new List<ServerViewModel>();
 
 			foreach (string applicationName in _configuration.Applications.OrderBy(x => x))
 			{
-				List<LogEntry> entries = _repository.GetEntriesThisWeek(applicationName).ToList();
+				List<LogEntry> entries = _repository.GetEntriesThisWeek(environment.Name, applicationName).ToList();
 				var topException = entries.GroupBy(x => x.ExceptionType)
-					//.Where(x => !string.IsNullOrWhiteSpace(x.Key))
 					.OrderByDescending(x => x.Count());
 
 				string exceptionType = "";
@@ -63,13 +97,13 @@ namespace Kelpie.Web.Controllers
 				if (topItem != null)
 					exceptionType = topItem.Key;
 
-				var model = new HomepageModel()
+				var model = new ServerViewModel()
 				{
 					Application = applicationName,
 					TopExceptionType = exceptionType,
 					ErrorCount = entries.Count,
-					ErrorCountPerServer = entries.Count/_configuration.Servers.Count(),
-					ServerCount = _configuration.Servers.Count()
+					ErrorCountPerServer = entries.Count/ environment.Servers.Count(),
+					ServerCount = environment.Servers.Count()
 				};
 
 				list.Add(model);
@@ -80,37 +114,53 @@ namespace Kelpie.Web.Controllers
 
 		public ActionResult GetCacheDataStatus()
 		{
-			bool hasData = MemoryCache.Default.Get("dashboard-list") != null;
+			string cacheKey = GetCacheKey();
+            bool hasData = MemoryCache.Default.Get(cacheKey) != null;
 			return Json(hasData, JsonRequestBehavior.AllowGet);
 		}
 
 		public ActionResult Today(string applicationName)
 		{
+			Environment currentEnvironment = GetSelectedEnvironment();
+
+			ViewBag.EnvironmentName = currentEnvironment.Name;
 			ViewBag.ApplicationName = applicationName;
-			var entries = _repository.GetEntriesToday(applicationName);
+
+			var entries = _repository.GetEntriesToday(currentEnvironment.Name, applicationName);
 			return View(entries);
 		}
 
 		public ActionResult ThisWeek(string applicationName)
 		{
+			Environment currentEnvironment = GetSelectedEnvironment();
+
+			ViewBag.EnvironmentName = currentEnvironment.Name;
 			ViewBag.ApplicationName = applicationName;
-			var entries = _repository.GetEntriesThisWeek(applicationName);
+
+			var entries = _repository.GetEntriesThisWeek(currentEnvironment.Name, applicationName);
 			return View(entries);
 		}
 
 		public ActionResult AllExceptionTypes(string applicationName)
 		{
+			Environment currentEnvironment = GetSelectedEnvironment();
+
+			ViewBag.EnvironmentName = currentEnvironment.Name;
 			ViewBag.ApplicationName = applicationName;
-			var entries = _repository.GetEntriesThisWeekGroupedByException(applicationName);
+
+			var entries = _repository.GetEntriesThisWeekGroupedByException(currentEnvironment.Name, applicationName);
 			return View(entries);
 		}
 
 		public ActionResult ExceptionType(string applicationName, string exceptionType)
 		{
+			Environment currentEnvironment = GetSelectedEnvironment();
+
+			ViewBag.EnvironmentName = currentEnvironment.Name;
 			ViewBag.ApplicationName = applicationName;
 			ViewBag.ExceptionType = exceptionType;
 
-			var entries = _repository.FindByExceptionType(applicationName, exceptionType);
+			var entries = _repository.FindByExceptionType(currentEnvironment.Name, applicationName, exceptionType);
 			return View(entries);
 		}
 
@@ -118,6 +168,17 @@ namespace Kelpie.Web.Controllers
 		{
 			LogEntry entry = _repository.GetEntry(id);
 			return Content(HttpUtility.HtmlEncode(entry.Message.Trim()));
+		}
+
+		public ActionResult ClearCache()
+		{
+			foreach (KeyValuePair<string, object> keyValuePair in MemoryCache.Default)
+			{
+				if (keyValuePair.Key.StartsWith("kelpie."))
+					MemoryCache.Default.Remove(keyValuePair.Key);
+			}
+
+			return Content("All cache keys for Kelpie cleared.");
 		}
 	}
 }

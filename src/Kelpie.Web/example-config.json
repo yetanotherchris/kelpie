@@ -1,19 +1,24 @@
 ﻿{
 	/* Rename this file to kelpie.config */
 	"ConfigFile": "",
+	"ImportBufferSize": 100,
+	"PageSize": 20,
+	"MaxAgeDays": 7,
 	"Applications": [
 		"App1"
 	],
-	"Servers": [
+	"Environments": [
 		{
-			"Name": "ricecakes",
-			"Path": "D:\\Errorlogs",
-			"CopyFilesToLocal": false,
-			"Username": null,
-			"Password": null
+			"Name":  "Development",
+			"Servers": [
+				{
+					"Name": "ricecakes",
+					"Path": "D:\\Errorlogs",
+					"CopyFilesToLocal": false,
+					"Username": null,
+					"Password": null
+				}
+			]
 		}
-	],
-	"ImportBufferCount": 100,
-	"PageSize": 20,
-	"MaxAgeDays": 7
+	]
 }

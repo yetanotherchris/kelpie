@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Kelpie.Core.Domain;
+using Environment = Kelpie.Core.Domain.Environment;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace Kelpie.Core
@@ -11,8 +12,8 @@ namespace Kelpie.Core
 		public string ConfigFile { get; set; }
 
 		public List<string> Applications { get; set; }
-		public List<Server> Servers { get; set; }
-		public int ImportBufferCount { get; set; }
+		public List<Environment> Environments { get; set; }
+		public int ImportBufferSize { get; set; }
 		public int PageSize { get; set; }
 		public int MaxAgeDays { get; set; }
 

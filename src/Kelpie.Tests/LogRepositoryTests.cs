@@ -15,6 +15,7 @@ namespace Kelpie.Tests
 	public class LogRepositoryTests
 	{
 		private ConfigurationStub _configuration;
+		private string _environmentName = "Dev";
 
 		[SetUp]
 		public void SetUp()
@@ -33,16 +34,17 @@ namespace Kelpie.Tests
 		public void should_save_entry()
 		{
 			// Arrange
-			string logApplication = "FooApp";
+			string environment = _environmentName;
+			string applicationName = "FooApp";
 
             var repository = CreateRepository();
-			var entry = CreatLogEntry(logApplication, "crap");
+			var entry = CreatLogEntry(applicationName, "crap");
 
 			// Act
 			repository.Save(entry);
 
 			// Assert
-			IEnumerable<LogEntry> entries = repository.GetEntriesForApp(logApplication);
+			IEnumerable<LogEntry> entries = repository.GetEntriesForApp(environment, applicationName);
 			Assert.That(entries.Count(), Is.EqualTo(1));
 		}
 
@@ -50,16 +52,17 @@ namespace Kelpie.Tests
 		public void should_load_entry_for_application()
 		{
 			// Arrange
-			string logApplication = "FooApp";
+			string environment = _environmentName;
+			string applicationName = "FooApp";
 
 			var repository = CreateRepository();
-			var entry1 = CreatLogEntry(logApplication, "crap1");
-			var entry2 = CreatLogEntry(logApplication, "crap2");
+			var entry1 = CreatLogEntry(applicationName, "crap1");
+			var entry2 = CreatLogEntry(applicationName, "crap2");
 			repository.Save(entry1);
 			repository.Save(entry2);
 
 			// Act
-			IEnumerable<LogEntry> entries = repository.GetEntriesForApp(logApplication);
+			IEnumerable<LogEntry> entries = repository.GetEntriesForApp(environment, applicationName);
 
 			// Assert
 			Assert.That(entries.Count(), Is.EqualTo(2));
@@ -69,6 +72,7 @@ namespace Kelpie.Tests
 		public void should_not_load_entry_for_different_application()
 		{
 			// Arrange
+			string environment = _environmentName;
 			string fooApp = "FooApp";
 			string barApp = "Bar"; 
 
@@ -79,7 +83,7 @@ namespace Kelpie.Tests
 			repository.Save(entry2);
 
 			// Act
-			IEnumerable<LogEntry> entries = repository.GetEntriesForApp(barApp);
+			IEnumerable<LogEntry> entries = repository.GetEntriesForApp(environment, barApp);
 
 			// Assert
 			Assert.That(entries.Count(), Is.EqualTo(0));
@@ -89,19 +93,20 @@ namespace Kelpie.Tests
 		public void should_load_entries_for_today()
 		{
 			// Arrange
-			string logApplication = "FooApp";
+			string environment = _environmentName;
+			string applicationName = "FooApp";
 
 			var repository = CreateRepository();
-			var entry1 = CreatLogEntry(logApplication, "today");
+			var entry1 = CreatLogEntry(applicationName, "today");
 			entry1.DateTime = DateTime.Now;
 
-			var entry2 = CreatLogEntry(logApplication, "today");
+			var entry2 = CreatLogEntry(applicationName, "today");
 			entry2.DateTime = DateTime.Now;
 
-			var entry3 = CreatLogEntry(logApplication, "yesterday");
+			var entry3 = CreatLogEntry(applicationName, "yesterday");
 			entry3.DateTime = DateTime.Now.AddDays(-1);
 
-			var entry4 = CreatLogEntry(logApplication, "2 days ago");
+			var entry4 = CreatLogEntry(applicationName, "2 days ago");
 			entry4.DateTime = DateTime.Now.AddDays(-2);
 
 			repository.Save(entry1);
@@ -110,7 +115,7 @@ namespace Kelpie.Tests
 			repository.Save(entry4);
 
 			// Act
-			IEnumerable<LogEntry> entries = repository.GetEntriesToday(logApplication);
+			IEnumerable<LogEntry> entries = repository.GetEntriesToday(environment, applicationName);
 
 			// Assert
 			Assert.That(entries.Count(), Is.EqualTo(2));
@@ -120,19 +125,20 @@ namespace Kelpie.Tests
 		public void should_load_entries_for_this_week()
 		{
 			// Arrange
-			string logApplication = "FooApp";
+			string environment = _environmentName;
+			string applicationName = "FooApp";
 
 			var repository = CreateRepository();
-			var entry1 = CreatLogEntry(logApplication, "today");
+			var entry1 = CreatLogEntry(applicationName, "today");
 			entry1.DateTime = DateTime.Now;
 
-			var entry2 = CreatLogEntry(logApplication, "this time last week");
+			var entry2 = CreatLogEntry(applicationName, "this time last week");
 			entry2.DateTime = DateTime.Now.AddDays(-7);
 
-			var entry3 = CreatLogEntry(logApplication, "yesterday");
+			var entry3 = CreatLogEntry(applicationName, "yesterday");
 			entry3.DateTime = DateTime.Now.AddDays(-1);
 
-			var entry4 = CreatLogEntry(logApplication, "8 days ago");
+			var entry4 = CreatLogEntry(applicationName, "8 days ago");
 			entry4.DateTime = DateTime.Now.AddDays(-8);
 
 			repository.Save(entry1);
@@ -141,11 +147,15 @@ namespace Kelpie.Tests
 			repository.Save(entry4);
 
 			// Act
-			IEnumerable<LogEntry> entries = repository.GetEntriesThisWeek(logApplication);
+			IEnumerable<LogEntry> entries = repository.GetEntriesThisWeek(environment, applicationName);
 
 			// Assert
 			Assert.That(entries.Count(), Is.EqualTo(3));
 		}
+
+		// TODO: GetEntriesThisWeekGroupedByException
+		// TODO: FindByExceptionType
+		// TODO: GetEntry
 
 		private LogEntry CreatLogEntry(string application, string message)
 		{
@@ -155,7 +165,8 @@ namespace Kelpie.Tests
 				Source = "FooAppLogger",
 				Level = "Error",
 				ApplicationName = application,
-				Message = message
+				Message = message,
+				Environment = _environmentName
 			};
 		}
 	}
