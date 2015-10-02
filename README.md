@@ -90,15 +90,14 @@ An example config is below. Things to note:
 1. Environments
 
 ### Iteration 3
-1. Search messages
-
-### Iteration 3.1
-1. Improvements to the dashboard to show server with most errors, removing the average.
-
-### Iteration 4
-1. Paging
-
-### Iteration 5
 1. Import tool improvements: --update, --copyfiles to only copy files.
 2. Smart re-scanning, journaling the last scan time for each app and server.
 
+### Iteration 4
+1. Search messages
+
+### Iteration 4.1
+1. Improvements to the dashboard to show server with most errors, removing the average.
+
+### Iteration 5
+1. Paging
