@@ -173,6 +173,62 @@ namespace Kelpie.Tests
             Assert.That(entries.Count(), Is.EqualTo(expectedResults));
         }
 
+        [Test]
+        [TestCase(1, 1, 1)]
+        public void should_load_entry_for_application_for_today(int page, int rows, int expectedResults)
+        {
+            // Arrange
+            string logApplication = "FooApp";
+            DateTime start = DateTime.Now.Date;
+            DateTime end = start.AddHours(24);
+
+            var repository = CreateRepository();
+            AddEntryToLog(repository, logApplication, "foo1");
+            AddEntryToLog(repository, logApplication, "foo2");
+            Thread.Sleep(1000);
+
+            // Act
+            IEnumerable<LogEntry> entries = repository.GetFilterEntriesForApp(new LogEntryFilter()
+            {
+                LogApplication = logApplication,
+                Page = page,
+                Rows = rows,
+                Start = start,
+                End = end
+            });
+
+            // Assert
+            Assert.That(entries.Count(), Is.EqualTo(expectedResults));
+        }
+
+        [Test]
+        [TestCase(1, 1, 1)]
+        public void should_load_entry_for_application_for_this_week(int page, int rows, int expectedResults)
+        {
+            // Arrange
+            string logApplication = "FooApp";
+            DateTime start = DateTime.Now.Date;
+            DateTime end = start.AddDays(7);
+
+            var repository = CreateRepository();
+            AddEntryToLog(repository, logApplication, "foo1");
+            AddEntryToLog(repository, logApplication, "foo2");
+            Thread.Sleep(1000);
+
+            // Act
+            IEnumerable<LogEntry> entries = repository.GetFilterEntriesForApp(new LogEntryFilter()
+            {
+                LogApplication = logApplication,
+                Page = page,
+                Rows = rows,
+                Start = start,
+                End = end
+            });
+
+            // Assert
+            Assert.That(entries.Count(), Is.EqualTo(expectedResults));
+        }
+
         private void AddEntryToLog(LogEntryRepository repository, string application, string message)
         {
             repository.Save(CreatLogEntry(application, message));

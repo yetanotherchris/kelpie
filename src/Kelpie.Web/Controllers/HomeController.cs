@@ -119,7 +119,7 @@ namespace Kelpie.Web.Controllers
 			return Json(hasData, JsonRequestBehavior.AllowGet);
 		}
 
-		public ActionResult Today(string applicationName)
+		public ActionResult Today(string applicationName, int? page, int? rows)
 		{
 			Environment currentEnvironment = GetSelectedEnvironment();
 
