@@ -1,39 +1,50 @@
 ﻿@model LogEntriesForDay
 <div class="collection">
-	<div class="collection-item active">@Model.DayOfWeek</div>
+    <div class="collection-item active">@Model.DayOfWeek</div>
+    <div class="collection-item">
+        @if (Model.Page > 1)
+        {
+            @Html.ActionLink("<<", "Today", new { page = Model.Page - 1, rows = Model.Rows })
+        }
+        Page: @Model.Page of @Model.TotalPages
+        @if (Model.Page < Model.TotalPages)
+        {
+            @Html.ActionLink(">>", "Today", new { page = Model.Page + 1, rows = Model.Rows })
+        }
+    </div>
 </div>
 
 @if (Model.LogEntries.Any())
 {
-	<table class="errors">
-		<thead>
-		<tr>
-			<th>Time</th>
-			<th>Message</th>
-			<th>Exception</th>
-			<th>Server</th>
-			<th></th>
-		</tr>
-		</thead>
+    <table class="errors">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Message</th>
+                <th>Exception</th>
+                <th>Server</th>
+                <th></th>
+            </tr>
+        </thead>
 
-		<tbody>
-		@foreach (LogEntry logEntry in Model.LogEntries)
-		{
-			<tr id="@logEntry.Id">
-				<td class="error-time">@logEntry.DateTime.ToShortTimeString()</td>
-				<td class="error-message">@logEntry.TruncatedMessage</td>
-				<td>@logEntry.ExceptionType</td>
-				<td class="error-server">@logEntry.Server</td>
-				<td><a href="javascript:;" class="expand"><i class="tiny material-icons">code</i></a></td>
-			</tr>
-			<tr class="hide">
-				<td colspan="4"><pre class="message"></pre></td>
-			</tr>
-		}
-		</tbody>
-	</table>
+        <tbody>
+            @foreach (LogEntry logEntry in Model.LogEntries)
+            {
+                <tr id="@logEntry.Id">
+                    <td class="error-time">@logEntry.DateTime.ToShortTimeString()</td>
+                    <td class="error-message">@logEntry.TruncatedMessage</td>
+                    <td>@logEntry.ExceptionType</td>
+                    <td class="error-server">@logEntry.Server</td>
+                    <td><a href="javascript:;" class="expand"><i class="tiny material-icons">code</i></a></td>
+                </tr>
+                <tr class="hide">
+                    <td colspan="4"><pre class="message"></pre></td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 else
 {
-	<p><i>No entries found.</i></p>
+    <p><i>No entries found.</i></p>
 }

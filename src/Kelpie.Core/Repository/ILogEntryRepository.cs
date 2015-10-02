@@ -10,11 +10,14 @@ namespace Kelpie.Core.Repository
 		void Save(LogEntry entry);
 		void BulkSave(IEnumerable<LogEntry> entries);
 		void DeleteAll();
+
 		IEnumerable<LogEntry> GetEntriesForApp(string environment, string applicationName);
 		IEnumerable<LogEntry> GetEntriesToday(string environment, string applicationName);
 		IEnumerable<LogEntry> GetEntriesThisWeek(string environment, string applicationName);
 		IEnumerable<IGrouping<string, LogEntry>> GetEntriesThisWeekGroupedByException(string environment,string applicationName);
 		IEnumerable<LogEntry> FindByExceptionType(string environment, string applicationName, string exceptionType);
-		LogEntry GetEntry(Guid id);
+
+        IEnumerable<LogEntry> GetFilterEntriesForApp(LogEntryFilter filter);
+        LogEntry GetEntry(Guid id);
 	}
 }
