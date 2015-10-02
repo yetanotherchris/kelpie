@@ -10,12 +10,14 @@ namespace Kelpie.Core.Repository
     public class LogEntryRepository : ILogEntryRepository
     {
         private readonly MongoClient _mongoClient;
+        private readonly IConfiguration _configuration;
         private readonly IMongoDatabase _database;
         private readonly IMongoCollection<LogEntry> _collection;
 
-        public LogEntryRepository(MongoClient mongoClient, string databaseName = "Kelpie")
+        public LogEntryRepository(MongoClient mongoClient, IConfiguration configuration, string databaseName = "Kelpie")
         {
             _mongoClient = mongoClient;
+            _configuration = configuration;
             _database = _mongoClient.GetDatabase(databaseName);
             _collection = _database.GetCollection<LogEntry>("LogEntry");
         }
@@ -32,29 +34,76 @@ namespace Kelpie.Core.Repository
 
         public void DeleteAll()
         {
-            _database.DropCollectionAsync("LogEntry");
+            // This should be used for imports, to ensure the data directory doesn't bloat.
+            DropDatabase("Kelpie");
         }
 
-        public IEnumerable<LogEntry> GetEntriesForApp(string logApplication)
+        public async void DropDatabase(string databaseName = "Kelpie")
         {
-            return _collection.AsQueryable<LogEntry>().Where(x => x.ApplicationName.Equals(logApplication));
+            await _mongoClient.DropDatabaseAsync(databaseName);
         }
 
-        public IEnumerable<LogEntry> GetEntriesToday(string applicationName)
+        public void DeleteCollection(string collectionName = "Kelpie")
         {
-            var items = _collection.AsQueryable<LogEntry>().Where(x => x.ApplicationName.Equals(applicationName) && x.DateTime > DateTime.Today);
+            _database.DropCollectionAsync(collectionName);
+        }
+
+        public IEnumerable<LogEntry> GetEntriesForApp(string environment, string applicationName)
+        {
+            return _collection.AsQueryable<LogEntry>().Where(x => x.Environment.Equals(environment)
+                                                                && x.ApplicationName.Equals(applicationName));
+        }
+
+        public IEnumerable<LogEntry> GetEntriesToday(string environment, string applicationName)
+        {
+            var items = _collection.AsQueryable<LogEntry>().Where(x => x.Environment.Equals(environment)
+                                                                        && x.ApplicationName.Equals(applicationName)
+                                                                        && x.DateTime > DateTime.Today);
 
             return items.ToList().OrderByDescending(x => x.DateTime);
         }
 
-        public IEnumerable<LogEntry> GetEntriesThisWeek(string logApplication)
+        public IEnumerable<LogEntry> GetEntriesThisWeek(string environment, string applicationName)
         {
             var items =
                 _collection.AsQueryable<LogEntry>()
-                    .Where(x => x.ApplicationName.Equals(logApplication) && x.DateTime > DateTime.Today.AddDays(-7));
+                    .Where(x => x.Environment.Equals(environment)
+                                && x.ApplicationName.Equals(applicationName)
+                                && x.DateTime > DateTime.Today.AddDays(-7));
 
             return items.ToList().OrderByDescending(x => x.DateTime);
         }
+
+        public IEnumerable<IGrouping<string, LogEntry>> GetEntriesThisWeekGroupedByException(string environment, string applicationName)
+        {
+            var items =
+                _collection.AsQueryable<LogEntry>()
+                    .Where(x => x.Environment.Equals(environment)
+                            && x.ApplicationName.Equals(applicationName)
+                            && x.DateTime > DateTime.Today.AddDays(-7)
+                            && !string.IsNullOrEmpty(x.ExceptionType));
+
+            return items.ToList().GroupBy(x => x.ExceptionType).OrderByDescending(x => x.Count()); // make sure to call ToList, or the groupby fails
+        }
+
+        public IEnumerable<LogEntry> FindByExceptionType(string environment, string applicationName, string exceptionType)
+        {
+            var items =
+                _collection.AsQueryable<LogEntry>()
+                    .Where(x => x.Environment.Equals(environment)
+                            && x.ApplicationName.Equals(applicationName)
+                            && x.DateTime > DateTime.Today.AddDays(-_configuration.MaxAgeDays)
+                            && x.ExceptionType == exceptionType);
+
+            return items.ToList().OrderByDescending(x => x.DateTime);
+        }
+
+        public LogEntry GetEntry(Guid id)
+        {
+            return _collection.AsQueryable<LogEntry>().FirstOrDefault(x => x.Id == id);
+        }
+
+
 
         public IEnumerable<LogEntry> GetFilterEntriesForApp(LogEntryFilter filter)
         {
@@ -66,31 +115,6 @@ namespace Kelpie.Core.Repository
             return _collection.AsQueryable<LogEntry>().Where(x => x.ApplicationName.Equals(filter.LogApplication))
                 .Skip((filter.Page.Value - 1) * filter.Rows.Value)
                 .Take(filter.Rows.Value);
-        }
-
-        public IEnumerable<IGrouping<string, LogEntry>> GetEntriesThisWeekGroupedByException(string logApplication)
-        {
-            var items =
-                _collection.AsQueryable<LogEntry>()
-                    .Where(x => x.ApplicationName.Equals(logApplication)
-                            && x.DateTime > DateTime.Today.AddDays(-7)
-                            && !string.IsNullOrEmpty(x.ExceptionType));
-
-            return items.ToList().GroupBy(x => x.ExceptionType).OrderByDescending(x => x.Count()); // make sure to call ToList, or the groupby fails
-        }
-
-        public IEnumerable<LogEntry> FindByExceptionType(string logApplication, string exceptionType)
-        {
-            var items =
-                _collection.AsQueryable<LogEntry>()
-                    .Where(x => x.ApplicationName.Equals(logApplication) && x.DateTime > DateTime.Today.AddDays(-7) && x.ExceptionType == exceptionType);
-
-            return items.ToList().OrderByDescending(x => x.DateTime);
-        }
-
-        public LogEntry GetEntry(Guid id)
-        {
-            return _collection.AsQueryable<LogEntry>().FirstOrDefault(x => x.Id == id);
         }
     }
 }

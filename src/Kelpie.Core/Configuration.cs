@@ -1,35 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using Kelpie.Core.Domain;
+using Environment = Kelpie.Core.Domain.Environment;
+using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace Kelpie.Core
 {
 	public class Configuration : IConfiguration
 	{
-		public IEnumerable<string> Applications { get; private set; }
-		public IEnumerable<string> ServerPaths { get; private set; }
-		public string ServerUsername { get; set; }
-		public string ServerPassword { get; set; }
+		public string ConfigFile { get; set; }
 
-		public Configuration()
+		public List<string> Applications { get; set; }
+		public List<Environment> Environments { get; set; }
+		public int ImportBufferSize { get; set; }
+		public int PageSize { get; set; }
+		public int MaxAgeDays { get; set; }
+
+		private Configuration()
 		{
-			ServerUsername = ConfigurationManager.AppSettings["serverUsername"];
-			ServerPassword = ConfigurationManager.AppSettings["serverPassword"];
+			ConfigFile = "";
+			Applications = new List<string>();
+		}
 
-			string appsCsv = ConfigurationManager.AppSettings["applications"];
-			string serversCsv = ConfigurationManager.AppSettings["serverPaths"];
+		public static IConfiguration Read()
+		{
+			string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "kelpie.config");
+			if (!File.Exists(configFilePath))
+				throw new KelpieException("Cannot find the Kelpie.config file.");
 
-			if (string.IsNullOrEmpty(appsCsv))
-				throw new InvalidOperationException("Oops! You have no applications defined. Add them to the web.config using <add key=\"applications\" value=\"app1,app2\" />");
+			string json = File.ReadAllText(configFilePath);
+			var config = JsonConvert.DeserializeObject<Configuration>(json);
 
-			if (string.IsNullOrEmpty(serversCsv))
-				throw new InvalidOperationException(@"Oops! You have no servers defined. Add them to the web.config using <add key=""serverPaths"" value=""\\localhost\d$\logs1,\\serverWithLongName.domain.com\Logs"" />");
+			if (!string.IsNullOrEmpty(config.ConfigFile) && File.Exists(config.ConfigFile))
+			{
+				json = File.ReadAllText(config.ConfigFile);
+				config = JsonConvert.DeserializeObject<Configuration>(json);
+			}
 
-			Applications = new List<string>(appsCsv.Split(','));
-			ServerPaths = new List<string>(serversCsv.Split(','));
+			return config;
 		}
 	}
 }

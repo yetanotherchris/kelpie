@@ -21,12 +21,12 @@ namespace Kelpie.ConsoleApp
 	public class Runner
 	{
 		private readonly LogEntryRepository _repository;
-		private readonly Configuration _configuration;
+		private readonly IConfiguration _configuration;
 
 		public Runner()
 		{
-			_configuration = new Configuration();
-			_repository = new LogEntryRepository(new MongoClient());
+			_configuration = Configuration.Read();
+			_repository = new LogEntryRepository(new MongoClient(), _configuration);
 		}
 
 		public void Refresh()

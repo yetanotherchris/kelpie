@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Repository;
+using Environment = System.Environment;
 
 namespace Kelpie.Core.Parser
 {
@@ -16,6 +17,7 @@ namespace Kelpie.Core.Parser
 		private readonly string _filePath;
 		private readonly string _serverName;
 		private readonly string _application;
+		private readonly string _environment;
 		private readonly ILogEntryRepository _repository;
 
 		/// <summary>
@@ -23,11 +25,12 @@ namespace Kelpie.Core.Parser
 		/// </summary>
 		public int MaxEntriesBeforeSave { get; set; }
 
-		public LogFileParser(string filePath, string serverName, string application, ILogEntryRepository repository)
+		public LogFileParser(string filePath, string serverName, string application, string environment, ILogEntryRepository repository)
 		{
 			_filePath = filePath;
 			_serverName = serverName;
 			_application = application;
+			_environment = environment;
 			_repository = repository;
 
 			MaxEntriesBeforeSave = 100;
@@ -87,10 +90,11 @@ namespace Kelpie.Core.Parser
 
 					entry.DateTime = DateTime.Parse(match.Groups["date"].Value);
 					entry.Source = match.Groups["source"].Value;
+					entry.Message = contents.Substring((match.Groups["source"].Index + 1) + match.Groups["source"].Length);
 					entry.Level = "Error";
 					entry.Server = _serverName;
 					entry.ApplicationName = _application;
-					entry.Message = contents.Substring((match.Groups["source"].Index + 1) + match.Groups["source"].Length);
+					entry.Environment = _environment;
 					FillExceptionType(entry);
 				}
 				catch (Exception)

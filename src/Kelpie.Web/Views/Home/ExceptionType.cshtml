@@ -3,8 +3,10 @@
 	ViewBag.Title = "Todays log entries for " + ViewBag.ApplicationName;
 }
 
+<span class="lozenge">@ViewBag.EnvironmentName</span>
 <h2 class="application-name">@ViewBag.ApplicationName</h2>
 <h5>@ViewBag.ExceptionType</h5>
+
 <div class="row">
 	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today))
 	@Html.Partial("EntriesForDay", LogEntriesForDay.Create(Model, DateTime.Today.AddDays(-1)))
