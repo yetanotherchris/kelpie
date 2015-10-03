@@ -175,7 +175,8 @@ namespace Kelpie.Tests
 
         [Test]
         [TestCase(1, 1, 1)]
-        public void should_load_entry_for_application_for_today(int page, int rows, int expectedResults)
+		[TestCase(-1, -1, 0)]
+		public void should_load_entry_for_application_for_today(int page, int rows, int expectedResults)
         {
             // Arrange
             string logApplication = "FooApp";

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Net;
-using Kelpie.Core;
-using Kelpie.Core.IO;
-using Kelpie.Core.Repository;
-using MongoDB.Driver;
+using CommandLine;
+using CommandLine.Text;
 
 namespace Kelpie.ConsoleApp
 {
@@ -11,30 +9,18 @@ namespace Kelpie.ConsoleApp
 	{
 		static void Main(string[] args)
 		{
-			var runner = new Runner();
-			runner.Refresh();
-
-			Console.WriteLine("Done");
-		}
-	}
-
-	public class Runner
-	{
-		private readonly LogEntryRepository _repository;
-		private readonly IConfiguration _configuration;
-
-		public Runner()
-		{
-			_configuration = Configuration.Read();
-			_repository = new LogEntryRepository(new MongoClient(), _configuration);
-		}
-
-		public void Refresh()
-		{
-			_repository.DeleteAll();
-
-			var logReader = new FileSystemLogReader(_configuration, _repository);
-			logReader.ScanLogDirectoriesAndAdd();
+			var options = new Options();
+			
+            if (Parser.Default.ParseArguments(args, options))
+			{
+				var runner = new Runner();
+				runner.Refresh();
+			}
+			else
+			{
+				// Display the default usage information
+				Console.WriteLine(HelpText.AutoBuild(options));
+			}
 		}
 	}
 }
