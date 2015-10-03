@@ -98,6 +98,7 @@ An example config is below. Things to note:
 
 ### Iteration 4.1
 1. Improvements to the dashboard to show server with most errors, removing the average.
+2. Totals for each day.
 
 ### Iteration 5
 1. Paging
