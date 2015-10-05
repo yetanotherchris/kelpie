@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using ByteSizeLib;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Repository;
 using Environment = System.Environment;
 
-namespace Kelpie.Core.Parser
+namespace Kelpie.Core.Import.Parser
 {
 	public class LogFileParser
 	{
 		private static readonly Regex _entryRegex = new Regex(@"(?<date>\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2}\.\d{4})\|ERROR\|(?<source>\w+?)\|(?<message>.*?)",
 																RegexOptions.Singleline | RegexOptions.Compiled);
 
-		private readonly string _filePath;
-		private readonly string _serverName;
-		private readonly string _application;
-		private readonly string _environment;
+
 		private readonly ILogEntryRepository _repository;
 
 		/// <summary>
@@ -25,23 +25,39 @@ namespace Kelpie.Core.Parser
 		/// </summary>
 		public int MaxEntriesBeforeSave { get; set; }
 
-		public LogFileParser(string filePath, string serverName, string application, string environment, ILogEntryRepository repository)
+		public LogFileParser(ILogEntryRepository repository)
 		{
-			_filePath = filePath;
-			_serverName = serverName;
-			_application = application;
-			_environment = environment;
 			_repository = repository;
-
 			MaxEntriesBeforeSave = 100;
 		}
 
-		public void ParseAndSave()
+		public void ParseAndSave(ServerLogFileContainer container)
+		{
+			if (!container.AppLogFiles.Any())
+				return;
+
+			foreach (AppLogFiles appLogFile in container.AppLogFiles)
+			{
+				Parallel.ForEach(appLogFile.LogfilePaths, (filePath) =>
+				{
+					LogLine("Parsing {0} ({1})", filePath, ByteSize.FromBytes(new FileInfo(filePath).Length).ToString());
+					ParseAndSaveSingleLog(container.Environment.Name, container.Server.Name, appLogFile.Appname, filePath);
+				});
+			}
+		}
+
+		private void LogLine(string format, params object[] args)
+		{
+			// TODO: add logger
+			System.Console.WriteLine(format, args);
+		}
+
+		private void ParseAndSaveSingleLog(string environment, string server, string appName, string filePath)
 		{
 			var list = new List<LogEntry>();
 
 			var stringBuilder = new StringBuilder();
-			using (var streamReader = new StreamReader(new FileStream(_filePath, FileMode.Open)))
+			using (var streamReader = new StreamReader(new FileStream(filePath, FileMode.Open)))
 			{
 				//  Read lines of text in, until we find an "|ERROR" as the delimiter and parse everything up to that line.
 				int lineCount = 0;
@@ -51,14 +67,15 @@ namespace Kelpie.Core.Parser
 
 					if (!string.IsNullOrEmpty(currentLine) && currentLine.Contains("|ERROR") && lineCount > 0)
 					{
-						list.Add(ParseLogEntry(stringBuilder.ToString()));
+						LogEntry logEntry = ParseLogEntry(environment, server, appName, stringBuilder.ToString());
+						list.Add(logEntry);
 
 						lineCount = 0;
 						stringBuilder = new StringBuilder();
 
 						if (list.Count >= MaxEntriesBeforeSave)
 						{
-							Console.WriteLine("- Saving {0} items for {1}", list.Count, _application);
+							System.Console.WriteLine("- Saving {0} items from {1}", list.Count, filePath);
 							_repository.BulkSave(list);
 							list = new List<LogEntry>();
                         }
@@ -71,13 +88,13 @@ namespace Kelpie.Core.Parser
 				// Any remaining
 				if (list.Count > 0)
 				{
-					Console.WriteLine("- Saving {0} items for {1}", list.Count, _application);
+					System.Console.WriteLine("- Saving {0} items from {1}", list.Count, filePath);
 					_repository.BulkSave(list);
 				}
 			}
 		}
 
-		private LogEntry ParseLogEntry(string contents)
+		private LogEntry ParseLogEntry(string environment, string server, string appName, string contents)
 		{
 			MatchCollection matches = _entryRegex.Matches(contents);
 			var entry = new LogEntry();
@@ -92,9 +109,9 @@ namespace Kelpie.Core.Parser
 					entry.Source = match.Groups["source"].Value;
 					entry.Message = contents.Substring((match.Groups["source"].Index + 1) + match.Groups["source"].Length);
 					entry.Level = "Error";
-					entry.Server = _serverName;
-					entry.ApplicationName = _application;
-					entry.Environment = _environment;
+					entry.Server = server;
+					entry.ApplicationName = appName;
+					entry.Environment = environment;
 					FillExceptionType(entry);
 				}
 				catch (Exception)

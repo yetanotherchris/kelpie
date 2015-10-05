@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Kelpie.Core.IO
+namespace Kelpie.Core.Import
 {
 	/// <summary>
 	/// From http://lookfwd.doitforme.gr/blog/media/PinvokeWindowsNetworking.cs

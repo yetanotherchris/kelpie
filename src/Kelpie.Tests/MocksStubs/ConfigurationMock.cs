@@ -9,7 +9,7 @@ using Environment = Kelpie.Core.Domain.Environment;
 
 namespace Kelpie.Tests.MocksStubs
 {
-	public class ConfigurationStub : IConfiguration
+	public class ConfigurationMock : IConfiguration
 	{
 		public string ConfigFile { get; set; }
 		public List<string> Applications { get; set; }
@@ -17,5 +17,10 @@ namespace Kelpie.Tests.MocksStubs
 		public int ImportBufferSize { get; set; }
 		public int PageSize { get; set; }
 		public int MaxAgeDays { get; set; }
+
+		public ConfigurationMock()
+		{
+			Environments = new List<Environment>();
+		}
 	}
 }

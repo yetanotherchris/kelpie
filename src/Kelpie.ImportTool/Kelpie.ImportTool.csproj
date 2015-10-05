@@ -7,8 +7,8 @@
     <ProjectGuid>{7BE2676F-1C46-494D-9EEE-4E914F486D77}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kelpie.ConsoleApp</RootNamespace>
-    <AssemblyName>Kelpie.ConsoleApp</AssemblyName>
+    <RootNamespace>Kelpie.ImportTool</RootNamespace>
+    <AssemblyName>Kelpie</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -80,10 +80,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
