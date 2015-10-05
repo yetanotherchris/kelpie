@@ -12,6 +12,14 @@ using Environment = Kelpie.Core.Domain.Environment;
 
 namespace Kelpie.Core.IO
 {
+	public class LogReaderOptions
+	{
+		public bool CopyFiles { get; set; }
+		public bool ImportData { get; set; }
+		public bool DeleteData { get; set; }
+		public bool SmartUpdate { get; set; }
+	}
+
 	public class FileSystemLogReader
 	{
 		private readonly IConfiguration _configuration;
