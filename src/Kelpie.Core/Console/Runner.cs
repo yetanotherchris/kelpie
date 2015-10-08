@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CommandLine.Text;
+using Kelpie.Core.Exceptions;
 using Kelpie.Core.Import;
 using Kelpie.Core.Import.Parser;
 using Kelpie.Core.Repository;
@@ -33,7 +35,7 @@ namespace Kelpie.Core.Console
 			if (result == false)
 			{
 				// Display the default usage information
-				return options.GetUsage();
+				return "";
 			}
 			else
 			{

@@ -1,5 +1,6 @@
 ﻿using System;
 using Kelpie.Core.Console;
+using Kelpie.Core.Exceptions;
 
 namespace Kelpie.ImportTool
 {
@@ -7,9 +8,17 @@ namespace Kelpie.ImportTool
 	{
 		static void Main(string[] args)
 		{
-			var runner = new Runner();
-			string output = runner.Run(args);
-			Console.WriteLine(output);
+			try
+			{
+				var runner = new Runner();
+				string output = runner.Run(args);
+				Console.WriteLine(output);
+            }
+			catch (InvalidConfigurationFileException e)
+			{
+                Console.Error.WriteLine("Error: {0}", e.Message);
+				Environment.Exit(1);
+			}
 		}
 	}
 }

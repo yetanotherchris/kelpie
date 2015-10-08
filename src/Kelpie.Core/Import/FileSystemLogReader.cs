@@ -152,19 +152,20 @@ namespace Kelpie.Core.Import
 
 			foreach (AppLogFiles appLogFile in container.AppLogFiles)
 			{
+				string appDirectory = Path.Combine(tempRoot, appLogFile.Appname);
+
+				if (!Directory.Exists(appDirectory))
+					Directory.CreateDirectory(appDirectory);
+
 				Parallel.ForEach(appLogFile.LogfilePaths, (filePath) =>
 				{
 					if (File.GetLastWriteTime(filePath) >= DateTime.UtcNow.AddDays(-_configuration.MaxAgeDays))
 					{
-						// Copy the log file to the %TEMP% directory
+						// Copy the log file to the %TEMP%/{appName}/ directory
 						string sourceDir = Path.GetDirectoryName(filePath);
-						string destDir = Path.Combine(tempRoot, appLogFile.Appname);
-
-						if (!Directory.Exists(destDir))
-							Directory.CreateDirectory(destDir);
-
+						
 						LogLine("- Copying {0} to local disk", filePath);
-						string destFilePath = filePath.Replace(sourceDir, destDir);
+						string destFilePath = filePath.Replace(sourceDir, appDirectory);
 						File.Copy(filePath, destFilePath, true);
 
 						appLogFile.UpdatePath(filePath, destFilePath);

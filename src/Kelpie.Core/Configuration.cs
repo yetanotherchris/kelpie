@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using Kelpie.Core.Domain;
+using Kelpie.Core.Exceptions;
+using Newtonsoft.Json;
 using Environment = Kelpie.Core.Domain.Environment;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 
@@ -26,19 +28,28 @@ namespace Kelpie.Core
 		public static IConfiguration Read()
 		{
 			string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "kelpie.config");
-			if (!File.Exists(configFilePath))
-				throw new KelpieException("Cannot find the Kelpie.config file.");
 
-			string json = File.ReadAllText(configFilePath);
-			var config = JsonConvert.DeserializeObject<Configuration>(json);
-
-			if (!string.IsNullOrEmpty(config.ConfigFile) && File.Exists(config.ConfigFile))
+			try
 			{
-				json = File.ReadAllText(config.ConfigFile);
-				config = JsonConvert.DeserializeObject<Configuration>(json);
-			}
+				if (!File.Exists(configFilePath))
+					throw new KelpieException("Cannot find the Kelpie.config file.");
 
-			return config;
+				string json = File.ReadAllText(configFilePath);
+				var config = JsonConvert.DeserializeObject<Configuration>(json);
+
+				if (!string.IsNullOrEmpty(config.ConfigFile) && File.Exists(config.ConfigFile))
+				{
+					configFilePath = config.ConfigFile;
+                    json = File.ReadAllText(configFilePath);
+					config = JsonConvert.DeserializeObject<Configuration>(json);
+				}
+
+				return config;
+			}
+			catch (JsonException e)
+			{
+				throw new InvalidConfigurationFileException("The kelpie configuration file '{0}' has some invalid JSON: {1}", configFilePath, e.Message);
+			}
 		}
 	}
 }
