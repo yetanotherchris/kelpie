@@ -1,0 +1,42 @@
+﻿@model SearchViewModel
+@{
+    ViewBag.Title = "Search logs using Kelpie app.";
+}
+
+<div class="row">
+    <form action="@Url.Action("Search")" role="form" class="form-horizontal">
+        <!-- Dropdown Structure -->
+        <fieldset>
+            <div class="form-group">
+                <label for="searchEnvironment" class="label col-md-3 col-lg-3">Environment: </label>
+                <div class="col-md-9 col-lg-9">
+                    <select id="searchEnvironment" class="form-control" name="Environment" style="width: 100px; height: 30px;">
+                        @foreach (string environment in Model.Environments)
+                        {
+                            <option value="@environment" selected="@(environment == Model.CurrentEnvironment)">@environment</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="searchApplication" class="label col-md-3">Application: </label>
+                <div class="col-md-9 col-lg-9">
+                    <select id="searchApplication" class="form-control" name="Application">
+                        @foreach (string application in Model.Applications)
+                        {
+                            <option value="@application">@application</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <input class="btn btn-primary" type="submit" value="Search logs"/>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class="row">
+    <div id="results">
+        <h3>No results so far</h3>
+    </div>
+</div>

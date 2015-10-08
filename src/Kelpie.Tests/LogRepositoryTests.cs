@@ -156,6 +156,7 @@ namespace Kelpie.Tests
 
         [Test]
         [TestCase(1, 1, 1)]
+        [TestCase(-1, -1, 0)]
         public void should_load_entry_for_application_paged(int page, int rows, int expectedResults)
         {
             // Arrange
@@ -176,7 +177,8 @@ namespace Kelpie.Tests
         [Test]
         [TestCase(1, 1, 1)]
 		[TestCase(-1, -1, 0)]
-		public void should_load_entry_for_application_for_today(int page, int rows, int expectedResults)
+        [TestCase(10, 1, 0)]
+        public void should_load_entry_for_application_for_today(int page, int rows, int expectedResults)
         {
             // Arrange
             string logApplication = "FooApp";
@@ -204,6 +206,8 @@ namespace Kelpie.Tests
 
         [Test]
         [TestCase(1, 1, 1)]
+        [TestCase(-1, -1, 0)]
+        [TestCase(10, 1, 0)]
         public void should_load_entry_for_application_for_this_week(int page, int rows, int expectedResults)
         {
             // Arrange

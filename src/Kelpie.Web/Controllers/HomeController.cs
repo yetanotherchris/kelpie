@@ -184,5 +184,20 @@ namespace Kelpie.Web.Controllers
 
             return Content("All cache keys for Kelpie cleared.");
         }
+
+        public ActionResult Search(SearchLogFilter filter)
+        {
+            Environment selectedEnvironment = GetSelectedEnvironment();
+            Response.Cookies.Add(new HttpCookie("environmentName", selectedEnvironment.Name));
+
+            var homepageModel = new SearchViewModel
+            {
+                Applications = _configuration.Applications,
+                Environments = _configuration.Environments.Select(x => x.Name),
+                CurrentEnvironment = selectedEnvironment.Name
+            };
+
+            return View(homepageModel);
+        }
     }
 }

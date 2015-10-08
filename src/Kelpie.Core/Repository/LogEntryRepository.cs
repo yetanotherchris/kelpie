@@ -111,6 +111,14 @@ namespace Kelpie.Core.Repository
                 filter.Page = 1;
             if (!filter.Rows.HasValue)
                 filter.Rows = 100;
+
+            IEnumerable<LogEntry> result = new List<LogEntry>();
+            //boundary checks
+            if (filter.Page.Value < 1)
+                return result;
+            if (filter.Rows.Value < 1)
+                return result;
+
             var query = _collection.AsQueryable<LogEntry>();
 
             if (filter.Start.HasValue)
@@ -123,9 +131,11 @@ namespace Kelpie.Core.Repository
                 query = query.Where(logEntry => logEntry.DateTime < filter.End.Value);
             }
 
-            return query.Where(x => x.ApplicationName.Equals(filter.LogApplication))
+            result = query.Where(x => x.ApplicationName.Equals(filter.LogApplication))
                 .Skip((filter.Page.Value - 1) * filter.Rows.Value)
                 .Take(filter.Rows.Value);
+
+            return result;
         }
     }
 }
