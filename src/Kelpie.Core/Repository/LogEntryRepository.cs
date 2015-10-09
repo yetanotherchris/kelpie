@@ -107,10 +107,11 @@ namespace Kelpie.Core.Repository
 
         public IEnumerable<LogEntry> GetFilterEntriesForApp(LogEntryFilter filter)
         {
-            if (!filter.Page.HasValue)
+            if (!filter.Page.HasValue || filter.Page.Value < 1)
                 filter.Page = 1;
-            if (!filter.Rows.HasValue)
+            if (!filter.Rows.HasValue || filter.Rows.Value < 1)
                 filter.Rows = 100;
+            
             var query = _collection.AsQueryable<LogEntry>();
 
             if (filter.Start.HasValue)
