@@ -133,6 +133,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Models\HomepageModel.cs" />
     <Compile Include="Models\SearchLogFilter.cs" />
@@ -166,10 +167,10 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Today.cshtml" />
+    <Content Include="Views\App\Today.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\Search.cshtml" />
-    <Content Include="Views\Home\AppNavigation.cshtml" />
+    <Content Include="Views\App\Search.cshtml" />
+    <Content Include="Views\App\AppNavigation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -186,16 +187,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\EntriesForDay.cshtml" />
+    <Content Include="Views\App\EntriesForDay.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\ThisWeek.cshtml" />
+    <Content Include="Views\App\ThisWeek.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\AllExceptionTypes.cshtml" />
+    <Content Include="Views\App\AllExceptionTypes.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\ExceptionType.cshtml" />
+    <Content Include="Views\App\ExceptionType.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\CrunchingData.cshtml" />

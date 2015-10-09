@@ -115,65 +115,6 @@ namespace Kelpie.Web.Controllers
             return Json(hasData, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Today(string applicationName, int? page, int? rows)
-        {
-            Environment currentEnvironment = GetSelectedEnvironment();
-
-            ViewBag.EnvironmentName = currentEnvironment.Name;
-            ViewBag.ApplicationName = applicationName;
-
-            var entries = _repository.GetFilterEntriesForApp(new LogEntryFilter()
-            {
-                Start = DateTime.Now.Date,
-                End = DateTime.Now.Date.AddHours(24),
-                LogApplication = applicationName,
-                Environment = currentEnvironment.Name,
-                Page = page,
-                Rows = rows
-            });
-            return View(entries);
-        }
-
-        public ActionResult ThisWeek(string applicationName)
-        {
-            Environment currentEnvironment = GetSelectedEnvironment();
-
-            ViewBag.EnvironmentName = currentEnvironment.Name;
-            ViewBag.ApplicationName = applicationName;
-
-            var entries = _repository.GetEntriesThisWeek(currentEnvironment.Name, applicationName);
-            return View(entries);
-        }
-
-        public ActionResult AllExceptionTypes(string applicationName)
-        {
-            Environment currentEnvironment = GetSelectedEnvironment();
-
-            ViewBag.EnvironmentName = currentEnvironment.Name;
-            ViewBag.ApplicationName = applicationName;
-
-            var entries = _repository.GetEntriesThisWeekGroupedByException(currentEnvironment.Name, applicationName);
-            return View(entries);
-        }
-
-        public ActionResult ExceptionType(string applicationName, string exceptionType)
-        {
-            Environment currentEnvironment = GetSelectedEnvironment();
-
-            ViewBag.EnvironmentName = currentEnvironment.Name;
-            ViewBag.ApplicationName = applicationName;
-            ViewBag.ExceptionType = exceptionType;
-
-            var entries = _repository.FindByExceptionType(currentEnvironment.Name, applicationName, exceptionType);
-            return View(entries);
-        }
-
-        public ActionResult LoadMessage(Guid id)
-        {
-            LogEntry entry = _repository.GetEntry(id);
-            return Content(HttpUtility.HtmlEncode(entry.Message.Trim()));
-        }
-
         public ActionResult ClearCache()
         {
             foreach (KeyValuePair<string, object> keyValuePair in MemoryCache.Default)
@@ -183,19 +124,6 @@ namespace Kelpie.Web.Controllers
             }
 
             return Content("All cache keys for Kelpie cleared.");
-        }
-
-		public ActionResult Search(string applicationName, string q)
-        {
-			Environment currentEnvironment = GetSelectedEnvironment();
-
-			ViewBag.EnvironmentName = currentEnvironment.Name;
-			ViewBag.ApplicationName = applicationName;
-			ViewBag.SearchQuery = q;
-
-			IEnumerable<LogEntry> results = _repository.Search(currentEnvironment.Name, applicationName, q);
-
-            return View(results);
         }
     }
 }
