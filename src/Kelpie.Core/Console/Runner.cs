@@ -79,6 +79,10 @@ namespace Kelpie.Core.Console
 				if (options.Import)
 				{
 					var parser = new LogFileParser(_repository);
+
+					if (_configuration.ImportBufferSize > 0)
+						parser.MaxEntriesBeforeSave = _configuration.ImportBufferSize;
+
                     foreach (ServerLogFileContainer container in containerList)
 					{
 						parser.ParseAndSave(container);

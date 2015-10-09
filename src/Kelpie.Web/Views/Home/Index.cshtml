@@ -9,7 +9,7 @@
 		<a class="dropdown-button" href="#!" data-activates="dropdown1">Environment<i class="material-icons right">arrow_drop_down</i></a>
 	</li>
 
-	<!-- Dropdown Structure -->
+	<!-- Environments -->
 	<ul id="dropdown1" class="dropdown-content">
 		@foreach (string environment in Model.Environments)
 		{
@@ -22,7 +22,6 @@
 
 <div class="row">
 	<h3>@Model.CurrentEnvironment</h3>
-
 
 	<div class="row" id="dashboard">
 		@foreach (ServerViewModel item in Model.ServerModels)

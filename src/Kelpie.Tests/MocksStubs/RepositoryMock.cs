@@ -45,6 +45,11 @@ namespace Kelpie.Tests.MocksStubs
 			return null;
 		}
 
+		public IEnumerable<LogEntry> GetEntriesSince(string environment, string applicationName, int numberOfDays)
+		{
+			return null;
+		}
+
 		public IEnumerable<IGrouping<string, LogEntry>> GetEntriesThisWeekGroupedByException(string environment, string applicationName)
 		{
 			return null;
@@ -61,6 +66,11 @@ namespace Kelpie.Tests.MocksStubs
 	    }
 
 	    public LogEntry GetEntry(Guid id)
+		{
+			return null;
+		}
+
+		public IEnumerable<LogEntry> Search(string environment, string applicationName, string query)
 		{
 			return null;
 		}

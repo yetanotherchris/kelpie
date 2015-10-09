@@ -28,7 +28,7 @@ namespace Kelpie.Core.Import.Parser
 		public LogFileParser(ILogEntryRepository repository)
 		{
 			_repository = repository;
-			MaxEntriesBeforeSave = 100;
+			MaxEntriesBeforeSave = 25;
 		}
 
 		public void ParseAndSave(ServerLogFileContainer container)

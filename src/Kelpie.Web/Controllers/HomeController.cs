@@ -84,7 +84,7 @@ namespace Kelpie.Web.Controllers
 
             foreach (string applicationName in _configuration.Applications.OrderBy(x => x))
             {
-                List<LogEntry> entries = _repository.GetEntriesThisWeek(environment.Name, applicationName).ToList();
+                List<LogEntry> entries = _repository.GetEntriesSince(environment.Name, applicationName, _configuration.MaxAgeDays).ToList();
                 var topException = entries.GroupBy(x => x.ExceptionType)
                     .OrderByDescending(x => x.Count());
 
@@ -185,19 +185,17 @@ namespace Kelpie.Web.Controllers
             return Content("All cache keys for Kelpie cleared.");
         }
 
-        public ActionResult Search(SearchLogFilter filter)
+		public ActionResult Search(string applicationName, string q)
         {
-            Environment selectedEnvironment = GetSelectedEnvironment();
-            Response.Cookies.Add(new HttpCookie("environmentName", selectedEnvironment.Name));
+			Environment currentEnvironment = GetSelectedEnvironment();
 
-            var homepageModel = new SearchViewModel
-            {
-                Applications = _configuration.Applications,
-                Environments = _configuration.Environments.Select(x => x.Name),
-                CurrentEnvironment = selectedEnvironment.Name
-            };
+			ViewBag.EnvironmentName = currentEnvironment.Name;
+			ViewBag.ApplicationName = applicationName;
+			ViewBag.SearchQuery = q;
 
-            return View(homepageModel);
+			IEnumerable<LogEntry> results = _repository.Search(currentEnvironment.Name, applicationName, q);
+
+            return View(results);
         }
     }
 }

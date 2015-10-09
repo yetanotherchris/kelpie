@@ -1,0 +1,13 @@
+﻿<li><a href="@Url.Action("Today", "Home", new { applicationName = @ViewBag.ApplicationName })">Today</a></li>
+<li><a href="@Url.Action("ThisWeek", "Home", new {applicationName = @ViewBag.ApplicationName})">This week</a></li>
+<li><a href="@Url.Action("AllExceptionTypes", "Home", new {applicationName = @ViewBag.ApplicationName})">Exceptions</a></li>
+<li>
+	<form method="GET" action="@Url.Action("Search", "Home")">
+		<div class="input-field">
+			<input type="hidden" name="applicationName" value="@ViewBag.ApplicationName"/>
+			<input id="search" type="search" required name="q" placeholder="@ViewBag.SearchQuery">
+			<label for="search"><i class="material-icons">search</i></label>
+			<i class="material-icons">close</i>
+		</div>
+	</form>
+</li>

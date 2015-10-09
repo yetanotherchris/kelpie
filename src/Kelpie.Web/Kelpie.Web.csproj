@@ -169,6 +169,7 @@
     <Content Include="Views\Home\Today.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Search.cshtml" />
+    <Content Include="Views\Home\AppNavigation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

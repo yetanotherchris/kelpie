@@ -12,17 +12,5 @@
 
 @section AdditionalNav
 {
-	<li><a href="@Url.Action("Today", "Home", new { applicationName = @ViewBag.ApplicationName })">Today</a></li>
-	<li><a href="@Url.Action("ThisWeek", "Home", new {applicationName = @ViewBag.ApplicationName})">This week</a></li>
-	<li><a href="@Url.Action("AllExceptionTypes", "Home", new { applicationName = @ViewBag.ApplicationName })">Exceptions</a></li>
-}
-
-@section scripts
-{
-	<script src="~/Scripts/expand-messages.js"></script>
-	<script type="text/javascript">
-			$(document).ready(function () {
-				Kelpie.ErrorMessageExpander.init();
-			});
-	</script>
+	@Html.Partial("AppNavigation")
 }

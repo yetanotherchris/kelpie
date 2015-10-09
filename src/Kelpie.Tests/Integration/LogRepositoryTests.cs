@@ -152,10 +152,40 @@ namespace Kelpie.Tests.Integration
 			Assert.That(entries.Count(), Is.EqualTo(3));
 		}
 
+		[Test]
+		public void search_should_have_this_test_written_for_it()
+		{
+			// Arrange
+
+			// Act
+
+			// Assert
+		}
+
+		[Test]
+		public void search_should_have_this_test_written_for_it_for_messages()
+		{
+			// Arrange
+
+			// Act
+
+			// Assert
+		}
+
+		[Test]
+		public void search_should_have_this_test_written_for_it_for_exception_types()
+		{
+			// Arrange
+
+			// Act
+
+			// Assert
+		}
+
 		// TODO: GetEntriesThisWeekGroupedByException
+		// TODO: GetEntriesSince
 		// TODO: FindByExceptionType
 		// TODO: GetEntry
-		// TODO: paging
 
 		private LogEntry CreateLogEntry(string application, string message)
 		{

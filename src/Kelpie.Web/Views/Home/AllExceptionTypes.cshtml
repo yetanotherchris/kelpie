@@ -35,7 +35,5 @@
 
 @section AdditionalNav
 {
-	<li><a href="@Url.Action("Today", "Home", new { applicationName = @ViewBag.ApplicationName })">Today</a></li>
-	<li><a href="@Url.Action("ThisWeek", "Home", new {applicationName = @ViewBag.ApplicationName})">This week</a></li>
-	<li><a href="@Url.Action("AllExceptionTypes", "Home", new { applicationName = @ViewBag.ApplicationName })">Exceptions</a></li>
+	@Html.Partial("AppNavigation")
 }
