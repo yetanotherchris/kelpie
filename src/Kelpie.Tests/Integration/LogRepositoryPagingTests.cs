@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Kelpie.Core.Domain;
 using Kelpie.Core.Repository;
 using Kelpie.Tests.MocksStubs;
@@ -31,8 +29,9 @@ namespace Kelpie.Tests.Integration
 		}
 
 		[Test]
-		[TestCase(1, 1, 1)]
-		public void should_load_entry_for_application_paged(int page, int rows, int expectedResults)
+        [TestCase(1, 1, 1)]
+        [TestCase(-1, -1, 2)]
+        public void should_load_entry_for_application_paged(int page, int rows, int expectedResults)
 		{
 			// Arrange
 			string logApplication = "FooApp";
@@ -50,8 +49,10 @@ namespace Kelpie.Tests.Integration
 		}
 
 		[Test]
-		[TestCase(1, 1, 1)]
-		public void should_load_entry_for_application_for_today(int page, int rows, int expectedResults)
+        [TestCase(1, 1, 1)]
+        [TestCase(-1, -1, 2)]
+        [TestCase(10, 1, 0)]
+        public void should_load_entry_for_application_for_today(int page, int rows, int expectedResults)
 		{
 			// Arrange
 			string logApplication = "FooApp";
