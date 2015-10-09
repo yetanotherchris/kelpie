@@ -149,7 +149,8 @@ namespace Kelpie.Core.Repository
 				_collection.AsQueryable<LogEntry>()
 					.Where(x => x.Environment.Equals(environment)
 							&& x.ApplicationName.Equals(applicationName)
-							&& x.ExceptionMessage.ToLower().Contains(query) || x.ExceptionType.ToLower().Contains(query) || x.Message.ToLower().Contains(query));
+							&& x.DateTime > DateTime.Today.AddDays(-_configuration.MaxAgeDays)
+							&& x.ExceptionType.ToLower().Contains(query) || x.Message.ToLower().Contains(query)); // Add "x.ExceptionMessage.ToLower().Contains(query)" ?
 
 			// We could add paging here, but it's probably overkill
 			return items.ToList()

@@ -18,7 +18,7 @@ Kelpie.ErrorMessageExpander = function($)
 			else {
 				$.ajax({
 					method: "GET",
-					url: "/Home/LoadMessage",
+					url: "/App/LoadMessage",
 					data: { "id": id }
 				})
 				.done(function (msg) {
