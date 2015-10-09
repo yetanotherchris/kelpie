@@ -12,5 +12,5 @@ namespace Kelpie.Web.Models
 		{
 			ServerModels = new List<ServerViewModel>();
 		}
-	}
+    }
 }

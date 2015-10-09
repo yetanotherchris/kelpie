@@ -79,6 +79,7 @@
     <Compile Include="Integration\LogFileParserTests.cs" />
     <Compile Include="Integration\LogRepositoryPagingTests.cs" />
     <Compile Include="Integration\LogRepositoryTests.cs" />
+    <Compile Include="Integration\LogRepositoryTests.cs" />
     <Compile Include="Integration\SetUpFixture.cs" />
     <Compile Include="MocksStubs\ConfigurationMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
