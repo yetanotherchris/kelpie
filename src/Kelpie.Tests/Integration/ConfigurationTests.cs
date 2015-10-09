@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kelpie.Core;
+﻿using Kelpie.Core;
 using NUnit.Framework;
 
-namespace Kelpie.Tests
+namespace Kelpie.Tests.Integration
 {
 	public class ConfigurationTests
 	{

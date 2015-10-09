@@ -10,5 +10,10 @@ namespace Kelpie.Core.Domain
 	{
 		public string Name { get; set; }
 		public List<Server> Servers { get; set; }
+
+		public Environment()
+		{
+			Servers = new List<Server>();
+		}
 	}
 }

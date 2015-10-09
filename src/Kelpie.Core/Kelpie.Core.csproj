@@ -53,6 +53,10 @@
       <HintPath>..\..\packages\ByteSize.1.1.0\lib\portable-net4+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1\ByteSizeLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Kelpie.Core">
       <HintPath>..\Kelpie.Web\Bin\Kelpie.Core.dll</HintPath>
     </Reference>
@@ -85,18 +89,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Console\Options.cs" />
+    <Compile Include="Console\Runner.cs" />
     <Compile Include="Domain\Environment.cs" />
     <Compile Include="Domain\Server.cs" />
     <Compile Include="Domain\LogEntry.cs" />
     <Compile Include="Domain\LogEntryFilter.cs" />
     <Compile Include="IConfiguration.cs" />
-    <Compile Include="IO\PinvokeWindowsNetworking.cs" />
+    <Compile Include="Import\AppLogFiles.cs" />
+    <Compile Include="Import\ServerLogFileContainer.cs" />
+    <Compile Include="Import\LogReaderOptions.cs" />
+    <Compile Include="Import\PinvokeWindowsNetworking.cs" />
     <Compile Include="KelpieException.cs" />
-    <Compile Include="Parser\LogFileParser.cs" />
+    <Compile Include="Import\Parser\LogFileParser.cs" />
     <Compile Include="Repository\ILogEntryRepository.cs" />
     <Compile Include="Repository\LogEntryRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IO\FileSystemLogReader.cs" />
+    <Compile Include="Import\FileSystemLogReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

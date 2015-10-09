@@ -91,13 +91,16 @@ An example config is below. Things to note:
 
 ### Iteration 3
 1. Import tool improvements: --update, --copyfiles to only copy files.
-2. Smart re-scanning, journaling the last scan time for each app and server.
 
 ### Iteration 4
-1. Search messages
-
-### Iteration 4.1
-1. Improvements to the dashboard to show server with most errors, removing the average.
+2. Smart re-scanning, journaling the last scan time for each app and server.
 
 ### Iteration 5
+1. Search messages
+
+### Iteration 6
+1. Improvements to the dashboard to show server with most errors, removing the average.
+2. Totals for each day.
+
+### Iteration 7
 1. Paging

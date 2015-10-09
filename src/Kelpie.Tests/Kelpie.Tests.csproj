@@ -75,12 +75,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigurationTests.cs" />
-    <Compile Include="LogFileParserTests.cs" />
-    <Compile Include="LogRepositoryTests.cs" />
-    <Compile Include="MocksStubs\ConfigurationStub.cs" />
+    <Compile Include="Integration\ConfigurationTests.cs" />
+    <Compile Include="Integration\LogFileParserTests.cs" />
+    <Compile Include="Integration\LogRepositoryPagingTests.cs" />
+    <Compile Include="Integration\LogRepositoryTests.cs" />
+    <Compile Include="Integration\SetUpFixture.cs" />
+    <Compile Include="MocksStubs\ConfigurationMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MocksStubs\RepositoryMock.cs" />
+    <Compile Include="Integration\RunnerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ExampleLogs\full.log">
