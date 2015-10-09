@@ -119,18 +119,26 @@ namespace Kelpie.Core.Import
 			// e.g. D:\ErrorLogs\MyApp\errors.log => "MyApp"
 			foreach (string path in paths)
 			{
-				string appName = Path.GetDirectoryName(path);
-				if (appDictionary.ContainsKey(appName))
-				{
-					appDictionary[appName].LogfilePaths.Add(path);
-				}
-				else
-				{
-					var appLogFile = new AppLogFiles() { Appname = appName };
-					appLogFile.LogfilePaths.Add(path);
+				// Split is needed for UNC paths as Path.GetDirectoryName fails
+				string[] parts = path.Split(Path.DirectorySeparatorChar);
 
-					appDictionary.Add(appName, appLogFile);
-				};
+				if (parts.Length > 1)
+				{
+					// e.g. "MyApp" from \\myserver\logs\MyApp\log1.log
+					string appName = parts[parts.Length - 2];
+
+					if (appDictionary.ContainsKey(appName))
+					{
+						appDictionary[appName].LogfilePaths.Add(path);
+					}
+					else
+					{
+						var appLogFile = new AppLogFiles() { Appname = appName };
+						appLogFile.LogfilePaths.Add(path);
+
+						appDictionary.Add(appName, appLogFile);
+					};
+				}
 			}
 
 			return appDictionary.Select(app => app.Value);
@@ -152,10 +160,10 @@ namespace Kelpie.Core.Import
 
 			foreach (AppLogFiles appLogFile in container.AppLogFiles)
 			{
-				string appDirectory = Path.Combine(tempRoot, appLogFile.Appname);
+				string destAppDirectory = Path.Combine(tempRoot, appLogFile.Appname);
 
-				if (!Directory.Exists(appDirectory))
-					Directory.CreateDirectory(appDirectory);
+				if (!Directory.Exists(destAppDirectory))
+					Directory.CreateDirectory(destAppDirectory);
 
 				Parallel.ForEach(appLogFile.LogfilePaths, (filePath) =>
 				{
@@ -165,14 +173,15 @@ namespace Kelpie.Core.Import
 						string sourceDir = Path.GetDirectoryName(filePath);
 						
 						LogLine("- Copying {0} to local disk", filePath);
-						string destFilePath = filePath.Replace(sourceDir, appDirectory);
+						string destFilePath = filePath.Replace(sourceDir, destAppDirectory);
+
 						File.Copy(filePath, destFilePath, true);
 
 						appLogFile.UpdatePath(filePath, destFilePath);
 					}
 					else
 					{
-						LogLine("Ignoring {0} as it's more than {1} days old", filePath, _configuration.MaxAgeDays);
+						LogLine("- Ignoring {0} as it's more than {1} days old", filePath, _configuration.MaxAgeDays);
 					}
 				});
 			}

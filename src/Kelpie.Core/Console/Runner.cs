@@ -27,7 +27,7 @@ namespace Kelpie.Core.Console
 			_repository = repository;
 		}
 
-		public string Run(string[] args)
+		public void Run(string[] args)
 		{
 			var options = new Options();
 			bool result = CommandLine.Parser.Default.ParseArguments(args, options);
@@ -35,14 +35,22 @@ namespace Kelpie.Core.Console
 			if (result == false)
 			{
 				// Display the default usage information
-				return "";
+				return;
 			}
 			else
 			{
+				// Nothing more to do
+				if (!options.Import && !options.CopyFiles && !options.WipeData)
+				{
+					System.Console.WriteLine(options.GetUsage());
+					return;
+				}
+
 				if (options.WipeData)
 				{
+					System.Console.WriteLine("Wiping the database.");
 					_repository.DeleteAll();
-				}
+				}		
 
 				var logReader = new FileSystemLogReader(_configuration);
 				var containerList = new List<ServerLogFileContainer>() ;
@@ -68,7 +76,7 @@ namespace Kelpie.Core.Console
 					}
 				}
 
-				if (options.SkipImport == false)
+				if (options.Import)
 				{
 					var parser = new LogFileParser(_repository);
                     foreach (ServerLogFileContainer container in containerList)
@@ -77,7 +85,7 @@ namespace Kelpie.Core.Console
 					}
 				}
 
-				return "done";
+				System.Console.WriteLine("Finished.");
 			}
 		}
 	}

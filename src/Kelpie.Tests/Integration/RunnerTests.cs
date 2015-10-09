@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Kelpie.Core.Console;
 using Kelpie.Core.Domain;
 using Kelpie.Tests.MocksStubs;
@@ -10,7 +11,21 @@ namespace Kelpie.Tests.Integration
 {
 	public class RunnerTests
 	{
+		private StringWriter _consoleWriter;
 		private const int FULL_LOG_ROW_COUNT = 648; // number of log entries in the full.log file
+
+		[TestFixtureSetUp]
+		public void Setup()
+		{
+			_consoleWriter = new StringWriter();
+			Console.SetOut(_consoleWriter);
+		}
+
+		[TestFixtureTearDown]
+		public void Teardown()
+		{
+			_consoleWriter.Dispose();
+        }
 
 		[Test]
 		[TestCase(null)]
@@ -25,9 +40,10 @@ namespace Kelpie.Tests.Integration
 			var runner = new Runner(config, repository);
 
 			// Act
-			string output = runner.Run(new string[] { args });
+			runner.Run(new string[] {args});
 
 			// Assert
+			string output = _consoleWriter.ToString();
 			Assert.That(output, Is.StringContaining("Kelpie import tool"));
 			Assert.That(output, Is.StringContaining("--help"));
 		}
@@ -46,10 +62,11 @@ namespace Kelpie.Tests.Integration
 			var runner = new Runner(config, repository);
 
 			// Act
-			string output = runner.Run(args);
+			runner.Run(args);
 
 			// Assert
-			Assert.That(output, Is.StringContaining("done"));
+			string output = _consoleWriter.ToString();
+			Assert.That(output, Is.StringContaining("Finished."));
 			Assert.That(repository.LogEntries.Count, Is.EqualTo(0));
 		}
 
@@ -57,7 +74,7 @@ namespace Kelpie.Tests.Integration
 		public void environment_arg_should_scan_a_single_environment()
 		{
 			// Arrange
-			string[] args = { "--environment=DEV" };
+			string[] args = { "--environment=DEV", "--import" };
 
 			var server1 = CreateFakeServer("JabberWocky1");
 			var server2 = CreateFakeServer("JabberWocky2");
@@ -79,10 +96,11 @@ namespace Kelpie.Tests.Integration
 			var runner = new Runner(config, repository);
 
 			// Act
-			string output = runner.Run(args);
+			runner.Run(args);
 
 			// Assert
-			Assert.That(output, Is.StringContaining("done"));
+			string output = _consoleWriter.ToString();
+			Assert.That(output, Is.StringContaining("Finished."));
 			Assert.That(repository.LogEntries.Count, Is.EqualTo(FULL_LOG_ROW_COUNT * 2));
 		}
 
@@ -90,7 +108,7 @@ namespace Kelpie.Tests.Integration
 		public void server_arg_should_scan_a_single_server()
 		{
 			// Arrange
-			string[] args = { "--server=JabberWocky1" };
+			string[] args = { "--server=JabberWocky1", "--import" };
 
 			var server1 = CreateFakeServer("JabberWocky1");
 			var server2 = CreateFakeServer("JabberWocky2");
@@ -107,18 +125,19 @@ namespace Kelpie.Tests.Integration
 			var runner = new Runner(config, repository);
 
 			// Act
-			string output = runner.Run(args);
+			runner.Run(args);
 
 			// Assert
-			Assert.That(output, Is.StringContaining("done"));
+			string output = _consoleWriter.ToString();
+			Assert.That(output, Is.StringContaining("Finished."));
 			Assert.That(repository.LogEntries.Count, Is.EqualTo(FULL_LOG_ROW_COUNT));
 		}
 
 		[Test]
-		public void skipimport_should_not_persist_data_to_the_repository()
+		public void import_should_persist_data_to_the_repository()
 		{
 			// Arrange
-			string[] args = { "--skipimport" };
+			string[] args = { "--import" };
 
 			var server1 = CreateFakeServer("JabberWocky1");
 
@@ -133,11 +152,12 @@ namespace Kelpie.Tests.Integration
 			var runner = new Runner(config, repository);
 
 			// Act
-			string output = runner.Run(args);
+			 runner.Run(args);
 
 			// Assert
-			Assert.That(output, Is.StringContaining("done"));
-			Assert.That(repository.LogEntries.Count, Is.EqualTo(0));
+			string output = _consoleWriter.ToString();
+			Assert.That(output, Is.StringContaining("Finished."));
+			Assert.That(repository.LogEntries.Count, Is.EqualTo(FULL_LOG_ROW_COUNT));
 		}
 
 		private Server CreateFakeServer(string serverName)

@@ -11,8 +11,7 @@ namespace Kelpie.ImportTool
 			try
 			{
 				var runner = new Runner();
-				string output = runner.Run(args);
-				Console.WriteLine(output);
+				runner.Run(args);
             }
 			catch (InvalidConfigurationFileException e)
 			{

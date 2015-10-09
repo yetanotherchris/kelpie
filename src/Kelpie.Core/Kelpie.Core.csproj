@@ -101,7 +101,7 @@
     <Compile Include="Import\LogReaderOptions.cs" />
     <Compile Include="Import\PinvokeWindowsNetworking.cs" />
     <Compile Include="Exceptions\InvalidConfigurationFileException.cs" />
-    <Compile Include="KelpieException.cs" />
+    <Compile Include="Exceptions\KelpieException.cs" />
     <Compile Include="Import\Parser\LogFileParser.cs" />
     <Compile Include="Repository\ILogEntryRepository.cs" />
     <Compile Include="Repository\LogEntryRepository.cs" />
