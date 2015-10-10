@@ -22,6 +22,11 @@ namespace Kelpie.Core.Repository
             _collection = _database.GetCollection<LogEntry>("LogEntry");
         }
 
+	    public int Count()
+	    {
+		    return _collection.AsQueryable().Count();
+	    }
+
         public void Save(LogEntry entry)
         {
             _collection.InsertOneAsync(entry);
@@ -38,7 +43,12 @@ namespace Kelpie.Core.Repository
             DropDatabase("Kelpie");
         }
 
-        public async void DropDatabase(string databaseName = "Kelpie")
+	    public IEnumerable<LogEntry> GetAllEntries(int index, int rowCount)
+	    {
+		    return _collection.AsQueryable().Skip(index).Take(rowCount).ToList();
+	    }
+
+	    public async void DropDatabase(string databaseName = "Kelpie")
         {
             await _mongoClient.DropDatabaseAsync(databaseName);
         }

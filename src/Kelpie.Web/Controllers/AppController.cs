@@ -109,7 +109,12 @@ namespace Kelpie.Web.Controllers
 			ViewBag.ApplicationName = applicationName;
 			ViewBag.SearchQuery = q;
 
-			IEnumerable<LogEntry> results = _repository.Search(currentEnvironment.Name, applicationName, q);
+			var searchRepository = new SearchRepository(_configuration);
+
+			q = string.Format("application:{0} environment:{1} {2}", applicationName, currentEnvironment.Name, q);
+			IEnumerable<LogEntry> results = searchRepository.Search(q);
+
+			//IEnumerable<LogEntry> results = _repository.Search(currentEnvironment.Name, applicationName, q);
 
             return View(results);
         }

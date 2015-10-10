@@ -30,6 +30,16 @@ namespace Kelpie.Tests.MocksStubs
 			LogEntries = new List<LogEntry>();
         }
 
+		public int Count()
+		{
+			return 0;
+		}
+
+		public IEnumerable<LogEntry> GetAllEntries(int index, int rowCount)
+		{
+			return null;
+		}
+
 		public IEnumerable<LogEntry> GetEntriesForApp(string environment, string applicationName)
 		{
 			return null;

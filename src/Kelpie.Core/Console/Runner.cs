@@ -39,8 +39,8 @@ namespace Kelpie.Core.Console
 			}
 			else
 			{
-				// Nothing more to do
-				if (!options.Import && !options.CopyFiles && !options.WipeData)
+				// Nothing to do
+				if (!options.Import && !options.CopyFiles && !options.WipeData && !options.Index)
 				{
 					System.Console.WriteLine(options.GetUsage());
 					return;
@@ -50,22 +50,26 @@ namespace Kelpie.Core.Console
 				{
 					System.Console.WriteLine("Wiping the database.");
 					_repository.DeleteAll();
-				}		
+				}
 
 				var logReader = new FileSystemLogReader(_configuration);
-				var containerList = new List<ServerLogFileContainer>() ;
+				var containerList = new List<ServerLogFileContainer>();
 
-				if (!string.IsNullOrEmpty(options.Environment))
+				// Populate the list of files to copy/import first.
+				if (options.CopyFiles || options.Import)
 				{
-					containerList = logReader.ScanSingleEnvironment(options.Environment).ToList();
-				}
-				else if (!string.IsNullOrEmpty(options.Server))
-				{
-					containerList.Add(logReader.ScanSingleServer(options.Server));
-				}
-				else
-				{
-					containerList = logReader.ScanAllEnvironments().ToList();
+					if (!string.IsNullOrEmpty(options.Environment))
+					{
+						containerList = logReader.ScanSingleEnvironment(options.Environment).ToList();
+					}
+					else if (!string.IsNullOrEmpty(options.Server))
+					{
+						containerList.Add(logReader.ScanSingleServer(options.Server));
+					}
+					else
+					{
+						containerList = logReader.ScanAllEnvironments().ToList();
+					}
 				}
 
 				if (options.CopyFiles)
@@ -83,10 +87,17 @@ namespace Kelpie.Core.Console
 					if (_configuration.ImportBufferSize > 0)
 						parser.MaxEntriesBeforeSave = _configuration.ImportBufferSize;
 
-                    foreach (ServerLogFileContainer container in containerList)
+					foreach (ServerLogFileContainer container in containerList)
 					{
 						parser.ParseAndSave(container);
 					}
+				}
+
+
+				if (options.Index)
+				{
+					var searchRepository = new SearchRepository(_configuration);
+					searchRepository.CreateIndex(_repository);
 				}
 
 				System.Console.WriteLine("Finished.");

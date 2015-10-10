@@ -68,7 +68,8 @@ namespace Kelpie.Core.Import.Parser
 					if (!string.IsNullOrEmpty(currentLine) && currentLine.Contains("|ERROR") && lineCount > 0)
 					{
 						LogEntry logEntry = ParseLogEntry(environment, server, appName, stringBuilder.ToString());
-						list.Add(logEntry);
+						if (logEntry != null)
+							list.Add(logEntry);
 
 						lineCount = 0;
 						stringBuilder = new StringBuilder();
@@ -78,6 +79,7 @@ namespace Kelpie.Core.Import.Parser
 							System.Console.WriteLine("- Saving {0} items from {1}", list.Count, filePath);
 							_repository.BulkSave(list);
 							list = new List<LogEntry>();
+							GC.Collect();
                         }
 					}
 
@@ -97,7 +99,7 @@ namespace Kelpie.Core.Import.Parser
 		private LogEntry ParseLogEntry(string environment, string server, string appName, string contents)
 		{
 			MatchCollection matches = _entryRegex.Matches(contents);
-			var entry = new LogEntry();
+			LogEntry entry = null;
 
 			if (matches.Count > 0)
 			{
@@ -105,6 +107,8 @@ namespace Kelpie.Core.Import.Parser
 				{
 					Match match = matches[0];
 
+					entry = new LogEntry();
+					entry.Id = Guid.NewGuid();
 					entry.DateTime = DateTime.Parse(match.Groups["date"].Value);
 					entry.Source = match.Groups["source"].Value;
 					entry.Message = contents.Substring((match.Groups["source"].Index + 1) + match.Groups["source"].Length);

@@ -11,6 +11,8 @@ namespace Kelpie.Core.Repository
 		void BulkSave(IEnumerable<LogEntry> entries);
 		void DeleteAll();
 
+		int Count();
+		IEnumerable<LogEntry> GetAllEntries(int index, int rowCount);
 		IEnumerable<LogEntry> GetEntriesForApp(string environment, string applicationName);
 		IEnumerable<LogEntry> GetEntriesToday(string environment, string applicationName);
 		IEnumerable<LogEntry> GetEntriesThisWeek(string environment, string applicationName);

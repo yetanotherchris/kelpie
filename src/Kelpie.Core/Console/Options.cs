@@ -16,6 +16,9 @@ namespace Kelpie.Core.Console
 		[Option('i', "import", Required = false, HelpText = "If true, imports all data into the database (when false, this is usually used in conjunction with --copyfiles).")]
 		public bool Import { get; set; }
 
+		[Option('x', "index", Required = false, HelpText = "If true, performs a Lucene re-index from all the data in the database. Use this when using --import.")]
+		public bool Index { get; set; }
+
 		[Option('u', "smartupdate", Required = false, HelpText = "Only imports log entries in each application that are newer than any existing ones. If this is not set and you do not specify --wipedata, you will get duplicate log file entries.")]
 		public bool SmartUpdate { get; set; }
 
