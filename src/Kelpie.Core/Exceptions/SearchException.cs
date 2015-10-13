@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kelpie.Core.Repository
+namespace Kelpie.Core.Exceptions
 {
 	public class SearchException : Exception
 	{

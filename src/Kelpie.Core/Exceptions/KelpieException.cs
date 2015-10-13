@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kelpie.Core
+namespace Kelpie.Core.Exceptions
 {
 	public class KelpieException : Exception
 	{

@@ -30,14 +30,9 @@ namespace Kelpie.Core.Console
 		public void Run(string[] args)
 		{
 			var options = new Options();
-			bool result = CommandLine.Parser.Default.ParseArguments(args, options);
+			bool success = CommandLine.Parser.Default.ParseArguments(args, options);
 
-			if (result == false)
-			{
-				// Display the default usage information
-				return;
-			}
-			else
+			if (success)
 			{
 				// Nothing to do
 				if (!options.Import && !options.CopyFiles && !options.WipeData && !options.Index)
