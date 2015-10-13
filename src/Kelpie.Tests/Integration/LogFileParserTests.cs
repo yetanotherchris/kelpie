@@ -49,7 +49,7 @@ namespace Kelpie.Tests.Integration
 		    // Arrange
 			var container = CreateContainer("ExampleLogs/empty.log");
             var repository = new RepositoryMock();
-            var logFileParser = new LogFileParser(repository);
+            var logFileParser = new LogFileParser(repository, false);
 
 			// Act
 			logFileParser.ParseAndSave(container);
@@ -67,7 +67,7 @@ namespace Kelpie.Tests.Integration
 			var container = CreateContainer("ExampleLogs/full.log");
 			var repository = new RepositoryMock();
 			DateTime expectedDate = DateTime.Parse("2015-09-24 10:25:13.7780");
-            var logFileParser = new LogFileParser(repository);
+            var logFileParser = new LogFileParser(repository, false);
 
 			// Act
 			logFileParser.ParseAndSave(container);
@@ -92,7 +92,7 @@ namespace Kelpie.Tests.Integration
 			// Arrange
 			var container = CreateContainer("ExampleLogs/full.log");
 			var repository = new RepositoryMock();
-			var logFileParser = new LogFileParser(repository);
+			var logFileParser = new LogFileParser(repository, false);
 
 			// Act
 			logFileParser.ParseAndSave(container);

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -19,16 +21,24 @@ namespace Kelpie.Core.Import.Parser
 
 
 		private readonly ILogEntryRepository _repository;
+		private readonly bool _useSmartParsing;
 
 		/// <summary>
 		/// Number of items to parse before calling repository.Save(), and thus GC'ing the list of entries.
 		/// </summary>
 		public int MaxEntriesBeforeSave { get; set; }
 
-		public LogFileParser(ILogEntryRepository repository)
+		public LogFileParser(ILogEntryRepository repository, bool useSmartParsing)
 		{
 			_repository = repository;
+			_useSmartParsing = useSmartParsing;
 			MaxEntriesBeforeSave = 25;
+		}
+
+		private void LogLine(string format, params object[] args)
+		{
+			// TODO: add logger
+			System.Console.WriteLine(format, args);
 		}
 
 		public void ParseAndSave(ServerLogFileContainer container)
@@ -38,46 +48,110 @@ namespace Kelpie.Core.Import.Parser
 
 			foreach (AppLogFiles appLogFile in container.AppLogFiles)
 			{
+				DateTime lastEntryDate = DateTime.MinValue;
+				LastLogEntryInfo lastLogEntryInfo = null;
+
+				if (_useSmartParsing)
+				{
+					lastLogEntryInfo = _repository.GetLastEntryInfo(container.Environment.Name, container.Server.Name, appLogFile.Appname);
+				}
+
+				if (lastLogEntryInfo != null)
+				{
+					lastEntryDate = lastLogEntryInfo.DateTime;
+					LogLine("- Using smart update. Last entry for {0}/{1}/{2} was {3}", container.Environment.Name, container.Server.Name, appLogFile.Appname, lastEntryDate);
+				}
+				else
+				{
+					LogLine("- No latest date found for {0} or smart update is off.", appLogFile.Appname);
+				}
+
+				_entryDates = new ConcurrentBag<DateTime>();
 				Parallel.ForEach(appLogFile.LogfilePaths, (filePath) =>
 				{
 					LogLine("Parsing {0} ({1})", filePath, ByteSize.FromBytes(new FileInfo(filePath).Length).ToString());
-					ParseAndSaveSingleLog(container.Environment.Name, container.Server.Name, appLogFile.Appname, filePath);
+
+					if (_useSmartParsing)
+					{
+						// Check #1 - ignore files that are older than the most recent log entry
+						FileInfo info = new FileInfo(filePath);
+						if (info.LastWriteTimeUtc > lastEntryDate)
+						{
+							ParseAndSaveSingleLogFile(container.Environment.Name, container.Server.Name, appLogFile.Appname, filePath, lastLogEntryInfo);
+						}
+						else
+						{
+							LogLine("Ignoring {0} as it's older than {1} (the last log entry)", filePath, lastEntryDate);
+						}
+					}
+					else
+					{
+						ParseAndSaveSingleLogFile(container.Environment.Name, container.Server.Name, appLogFile.Appname, filePath, null);
+					}
 				});
+
+
+				LastLogEntryInfo cachedEntryInfo = new LastLogEntryInfo()
+				{
+					Id = LastLogEntryInfo.GenerateId(container.Environment.Name, container.Server.Name, appLogFile.Appname),
+					DateTime = _entryDates.OrderByDescending(x => x.ToUniversalTime()).FirstOrDefault()
+				};
+
+				_repository.SaveLastEntry(cachedEntryInfo);
 			}
 		}
 
-		private void LogLine(string format, params object[] args)
-		{
-			// TODO: add logger
-			System.Console.WriteLine(format, args);
-		}
+		private ConcurrentBag<DateTime> _entryDates;
 
-		private void ParseAndSaveSingleLog(string environment, string server, string appName, string filePath)
+		private void ParseAndSaveSingleLogFile(string environment, string server, string appName, string filePath, LastLogEntryInfo lastLogEntryInfo)
 		{
 			var list = new List<LogEntry>();
+			int smartSkipCount = 0;
 
 			var stringBuilder = new StringBuilder();
 			using (var streamReader = new StreamReader(new FileStream(filePath, FileMode.Open)))
 			{
 				//  Read lines of text in, until we find an "|ERROR" as the delimiter and parse everything up to that line.
 				int lineCount = 0;
-				while (!streamReader.EndOfStream)
+				LogEntry logEntry = null;
+				DateTime lastDateTime = DateTime.MinValue;
+                while (!streamReader.EndOfStream)
 				{
 					string currentLine = streamReader.ReadLine();
 
 					if (!string.IsNullOrEmpty(currentLine) && currentLine.Contains("|ERROR") && lineCount > 0)
 					{
-						LogEntry logEntry = ParseLogEntry(environment, server, appName, stringBuilder.ToString());
+						logEntry = ParseLogEntry(environment, server, appName, stringBuilder.ToString());
 						if (logEntry != null)
-							list.Add(logEntry);
+						{
+							if (_useSmartParsing && lastLogEntryInfo != null)
+							{
+								// Check #2 - ignore entries that older than the last log entry date
+								if (logEntry.DateTime > lastLogEntryInfo.DateTime)
+								{
+									list.Add(logEntry);
+									lastDateTime = new DateTime(logEntry.DateTime.Ticks);
+								}
+							}
+							else
+							{
+								list.Add(logEntry);
+								lastDateTime = new DateTime(logEntry.DateTime.Ticks);
+							}
+						}
 
 						lineCount = 0;
 						stringBuilder = new StringBuilder();
 
 						if (list.Count >= MaxEntriesBeforeSave)
 						{
-							System.Console.WriteLine("- Saving {0} items from {1}", list.Count, filePath);
+							LogLine("- Saving {0} items from {1}{2}", 
+										list.Count, 
+										filePath, 
+										_useSmartParsing ? " (smart update skipped " + smartSkipCount+ " entries)" : "");
+
 							_repository.BulkSave(list);
+
 							list = new List<LogEntry>();
 							GC.Collect();
                         }
@@ -93,7 +167,9 @@ namespace Kelpie.Core.Import.Parser
 					System.Console.WriteLine("- Saving {0} items from {1}", list.Count, filePath);
 					_repository.BulkSave(list);
 				}
-			}
+
+				_entryDates.Add(lastDateTime);
+            }
 		}
 
 		private LogEntry ParseLogEntry(string environment, string server, string appName, string contents)

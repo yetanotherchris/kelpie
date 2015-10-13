@@ -23,5 +23,8 @@ namespace Kelpie.Core.Repository
         IEnumerable<LogEntry> GetFilterEntriesForApp(LogEntryFilter filter);
         LogEntry GetEntry(Guid id);
 		IEnumerable<LogEntry> Search(string environment, string applicationName, string query);
+
+		LastLogEntryInfo GetLastEntryInfo(string environment, string server, string appName);
+		void SaveLastEntry(LastLogEntryInfo lastLogEntryInfo);
 	}
 }

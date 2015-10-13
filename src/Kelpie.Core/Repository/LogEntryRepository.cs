@@ -167,5 +167,20 @@ namespace Kelpie.Core.Repository
 						.OrderByDescending(x => x.DateTime)
 						.Take(50);
 		}
-	}
+
+	    public LastLogEntryInfo GetLastEntryInfo(string environment, string server, string appName)
+	    {
+		    var collection = _database.GetCollection<LastLogEntryInfo>("LastLogEntryInfo");
+
+		    string id = LastLogEntryInfo.GenerateId(environment, server, appName);
+            return collection.AsQueryable<LastLogEntryInfo>().FirstOrDefault(x => x.Id == id);
+	    }
+
+	    public void SaveLastEntry(LastLogEntryInfo lastLogEntryInfo)
+	    {
+		    var collection = _database.GetCollection<LastLogEntryInfo>("LastLogEntryInfo");
+
+			collection.ReplaceOneAsync(info => info.Id.Equals(lastLogEntryInfo.Id), lastLogEntryInfo, new UpdateOptions() { IsUpsert = true});
+		}
+    }
 }
