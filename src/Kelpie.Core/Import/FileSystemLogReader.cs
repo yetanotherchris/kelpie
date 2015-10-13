@@ -70,7 +70,6 @@ namespace Kelpie.Core.Import
 						AppLogFiles = apps
 					};
 					return container;
-					break;
 				}
 			}
 

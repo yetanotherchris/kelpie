@@ -60,14 +60,17 @@ namespace Kelpie.Core.Console
 				{
 					if (!string.IsNullOrEmpty(options.Environment))
 					{
+						System.Console.WriteLine("- Restricting import to {0} environment only", options.Environment);
 						containerList = logReader.ScanSingleEnvironment(options.Environment).ToList();
 					}
 					else if (!string.IsNullOrEmpty(options.Server))
 					{
+						System.Console.WriteLine("- Restricting import to {0} server only", options.Server);
 						containerList.Add(logReader.ScanSingleServer(options.Server));
 					}
 					else
 					{
+						System.Console.WriteLine("- Importing from all environments and servers");
 						containerList = logReader.ScanAllEnvironments().ToList();
 					}
 				}
