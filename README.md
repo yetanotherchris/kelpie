@@ -104,3 +104,10 @@ An example config is below. Things to note:
 
 ### Iteration 7
 1. Paging
+
+### Performance, scaling and the ImportBufferSize settings
+Kelpie has been test with duplicated data creating an 11gb MongoDB data directory. This was with 10+ apps per server with 1gb of data per server (around 5gb of log files in total.) 
+
+The server was a VM dual core with 8gb of ram - the performance was ok, although indexing with lucene with this amount of data is very slow.
+
+It's recommended you keep your log files rotating and small with Kelpie - over 250mb per log file will work but will be slow to index and search. With large log file sizes you have to tweak the 'ImportBufferSize' setting or the import tool will throw `OutOfMemoryExceptions` due to the 2gb limitations with the heap size in .NET. If your log files are only 5-10mb then you can set this to a high number, around 500-1000 which greatly speeds up imports.
