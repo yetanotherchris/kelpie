@@ -67,15 +67,18 @@ namespace Kelpie.Core.Import.Parser
 				}
 
 				_entryDates = new ConcurrentBag<DateTime>();
+				_entryFileDates = new ConcurrentBag<DateTime>();
+
 				Parallel.ForEach(appLogFile.LogfilePaths, (filePath) =>
 				{
 					LogLine("Parsing {0} ({1})", filePath, ByteSize.FromBytes(new FileInfo(filePath).Length).ToString());
+					// Check #1 - ignore files that are older than the most recent log entry
+					FileInfo info = new FileInfo(filePath);
+					_entryFileDates.Add(info.LastWriteTimeUtc);
 
 					if (_useSmartParsing)
 					{
-						// Check #1 - ignore files that are older than the most recent log entry
-						FileInfo info = new FileInfo(filePath);
-						if (info.LastWriteTimeUtc > lastEntryDate)
+                        if (info.LastWriteTimeUtc > lastEntryDate)
 						{
 							ParseAndSaveSingleLogFile(container.Environment.Name, container.Server.Name, appLogFile.Appname, filePath, lastLogEntryInfo);
 						}
@@ -97,11 +100,18 @@ namespace Kelpie.Core.Import.Parser
 					DateTime = _entryDates.OrderByDescending(x => x.ToUniversalTime()).FirstOrDefault()
 				};
 
+				// For some reason a datetime for the app wasn't found in the log file, so use the file system date
+				if (cachedEntryInfo.DateTime == DateTime.MinValue)
+				{
+					cachedEntryInfo.DateTime = _entryFileDates.OrderByDescending(x => x.ToUniversalTime()).FirstOrDefault();
+				}
+
 				_repository.SaveLastEntry(cachedEntryInfo);
 			}
 		}
 
 		private ConcurrentBag<DateTime> _entryDates;
+		private ConcurrentBag<DateTime> _entryFileDates;
 
 		private void ParseAndSaveSingleLogFile(string environment, string server, string appName, string filePath, LastLogEntryInfo lastLogEntryInfo)
 		{
