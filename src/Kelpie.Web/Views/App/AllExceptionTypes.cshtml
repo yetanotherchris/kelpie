@@ -22,7 +22,7 @@
 			{
 				<tr id="@logEntry">
 					<td class="error-time">@logEntry.Count()</td>
-					<td class="error-message"><a href="@Url.Action("ExceptionType", "Home", new { applicationName = @ViewBag.ApplicationName, exceptionType = logEntry.Key})">@logEntry.Key</a></td>
+					<td class="error-message"><a href="@Url.Action("ExceptionType", "App", new { applicationName = @ViewBag.ApplicationName, exceptionType = logEntry.Key})">@logEntry.Key</a></td>
 					<td class="error-server"></td>
 				</tr>
 				<tr class="hide">
