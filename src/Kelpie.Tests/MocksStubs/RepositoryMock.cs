@@ -85,12 +85,12 @@ namespace Kelpie.Tests.MocksStubs
 			return null;
 		}
 
-		public LastLogEntryInfo GetLastEntryInfo(string environment, string server, string appName)
+		public LatestLogFileInfo GetLatestLogFileInfo(string environment, string server, string appName)
 		{
 			return null;
 		}
 
-		public void SaveLastEntry(LastLogEntryInfo lastLogEntryInfo)
+		public void SaveLatestLogFileInfo(LatestLogFileInfo latestLogFileInfo)
 		{
 		}
 	}

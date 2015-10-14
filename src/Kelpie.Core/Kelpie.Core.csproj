@@ -113,7 +113,7 @@
     <Compile Include="Exceptions\KelpieException.cs" />
     <Compile Include="Import\Parser\LogFileParser.cs" />
     <Compile Include="Domain\ILogEntryRepository.cs" />
-    <Compile Include="Repository\LastLogEntryInfo.cs" />
+    <Compile Include="Repository\LatestLogFileInfo.cs" />
     <Compile Include="Repository\LogEntryRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Import\FileSystemLogReader.cs" />

@@ -2,7 +2,7 @@
 
 namespace Kelpie.Core.Repository
 {
-	public class LastLogEntryInfo
+	public class LatestLogFileInfo
 	{
 		public string Id { get; set; }
 		public DateTime DateTime { get; set; }

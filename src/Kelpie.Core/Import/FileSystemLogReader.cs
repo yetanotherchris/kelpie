@@ -20,6 +20,12 @@ namespace Kelpie.Core.Import
 			_configuration = configuration;
 		}
 
+		private void LogLine(string format, params object[] args)
+		{
+			// TODO: add logger
+			System.Console.WriteLine(format, args);
+		}
+
 		/// <summary>
 		/// Scans all servers for a given environment.
 		/// </summary>
@@ -184,12 +190,6 @@ namespace Kelpie.Core.Import
 					}
 				});
 			}
-		}
-
-		private void LogLine(string format, params object[] args)
-		{
-			// TODO: add logger
-			System.Console.WriteLine(format, args);
 		}
 	}
 }

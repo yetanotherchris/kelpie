@@ -168,19 +168,19 @@ namespace Kelpie.Core.Repository
 						.Take(50);
 		}
 
-	    public LastLogEntryInfo GetLastEntryInfo(string environment, string server, string appName)
+	    public LatestLogFileInfo GetLatestLogFileInfo(string environment, string server, string appName)
 	    {
-		    var collection = _database.GetCollection<LastLogEntryInfo>("LastLogEntryInfo");
+		    var collection = _database.GetCollection<LatestLogFileInfo>("LatestLogFileInfo");
 
-		    string id = LastLogEntryInfo.GenerateId(environment, server, appName);
-            return collection.AsQueryable<LastLogEntryInfo>().FirstOrDefault(x => x.Id == id);
+		    string id = LatestLogFileInfo.GenerateId(environment, server, appName);
+            return collection.AsQueryable<LatestLogFileInfo>().FirstOrDefault(x => x.Id == id);
 	    }
 
-	    public void SaveLastEntry(LastLogEntryInfo lastLogEntryInfo)
+	    public void SaveLatestLogFileInfo(LatestLogFileInfo latestLogFileInfo)
 	    {
-		    var collection = _database.GetCollection<LastLogEntryInfo>("LastLogEntryInfo");
+		    var collection = _database.GetCollection<LatestLogFileInfo>("LatestLogFileInfo");
 
-			collection.ReplaceOneAsync(info => info.Id.Equals(lastLogEntryInfo.Id), lastLogEntryInfo, new UpdateOptions() { IsUpsert = true});
+			collection.ReplaceOneAsync(info => info.Id.Equals(latestLogFileInfo.Id), latestLogFileInfo, new UpdateOptions() { IsUpsert = true});
 		}
     }
 }
