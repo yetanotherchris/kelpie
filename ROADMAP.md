@@ -30,8 +30,9 @@
 1. Search messages
 
 ### Iteration 6
-1. Improvements to the dashboard to show server with most errors, removing the average.
-2. Totals for each day.
+1. Configuration for searching lucene
+2. Improvements to the dashboard to show server with most errors, removing the average.
+3. Totals for each day.
 
 ### Iteration 7
 1. Cleanup, test coverage, docs
