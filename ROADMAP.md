@@ -20,13 +20,13 @@
 ### Iteration 2.2 (Done)
 1. Environments
 
-### Iteration 3
+### Iteration 3 (Done)
 1. Import tool improvements: --update, --copyfiles to only copy files.
 
-### Iteration 4
+### Iteration 4 (Done)
 2. Smart re-scanning, journaling the last scan time for each app and server.
 
-### Iteration 5
+### Iteration 5 (Done)
 1. Search messages
 
 ### Iteration 6
@@ -34,4 +34,7 @@
 2. Totals for each day.
 
 ### Iteration 7
+1. Cleanup, test coverage, docs
+
+### Iteration 8
 1. Paging
