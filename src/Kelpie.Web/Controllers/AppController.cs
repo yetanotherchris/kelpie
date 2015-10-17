@@ -109,14 +109,21 @@ namespace Kelpie.Web.Controllers
 			ViewBag.ApplicationName = applicationName;
 			ViewBag.SearchQuery = q;
 
-			var searchRepository = new SearchRepository(_configuration);
+			IEnumerable<LogEntry> results = new LogEntry[0];
 
-			q = string.Format("application:{0} environment:{1} {2}", applicationName, currentEnvironment.Name, q);
-			IEnumerable<LogEntry> results = searchRepository.Search(q);
+			if (_configuration.IsLuceneEnabled)
+			{
+				var searchRepository = new SearchRepository(_configuration);
+				string query = searchRepository.CreateLuceneSearchSyntax(applicationName, currentEnvironment.Name, q);
+				results = searchRepository.Search(query);
+			}
+			else
+			{
+				// Use MongoDB's slower search.
+				results = _repository.Search(currentEnvironment.Name, applicationName, q);
+			}
 
-			//IEnumerable<LogEntry> results = _repository.Search(currentEnvironment.Name, applicationName, q);
-
-            return View(results);
+			return View(results);
         }
     }
 }

@@ -14,11 +14,10 @@ using Environment = System.Environment;
 
 namespace Kelpie.Core.Import.Parser
 {
-	public class LogFileParser
+	public class DefaultNLogFormatParser
 	{
 		private static readonly Regex _entryRegex = new Regex(@"(?<date>\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2}\.\d{4})\|ERROR\|(?<source>\w+?)\|(?<message>.*?)",
 																RegexOptions.Singleline | RegexOptions.Compiled);
-
 
 		private readonly ILogEntryRepository _repository;
 		private readonly bool _useSmartParsing;
@@ -29,7 +28,7 @@ namespace Kelpie.Core.Import.Parser
 		/// </summary>
 		public int MaxEntriesBeforeSave { get; set; }
 
-		public LogFileParser(ILogEntryRepository repository, bool useSmartParsing)
+		public DefaultNLogFormatParser(ILogEntryRepository repository, bool useSmartParsing)
 		{
 			_repository = repository;
 			_useSmartParsing = useSmartParsing;
@@ -38,7 +37,6 @@ namespace Kelpie.Core.Import.Parser
 
 		private void LogLine(string format, params object[] args)
 		{
-			// TODO: add logger
 			System.Console.WriteLine(format, args);
 		}
 

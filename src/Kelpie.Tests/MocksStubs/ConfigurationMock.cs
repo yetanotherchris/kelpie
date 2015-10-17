@@ -15,8 +15,9 @@ namespace Kelpie.Tests.MocksStubs
 		public List<string> Applications { get; set; }
 		public List<Environment> Environments { get; set; }
 		public int ImportBufferSize { get; set; }
-		public int PageSize { get; set; }
 		public int MaxAgeDays { get; set; }
+		public bool IsLuceneEnabled { get; set; }
+		public string LuceneIndexDirectory { get; set; }
 
 		public ConfigurationMock()
 		{

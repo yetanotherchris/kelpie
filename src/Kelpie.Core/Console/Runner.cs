@@ -80,7 +80,7 @@ namespace Kelpie.Core.Console
 
 				if (options.Import)
 				{
-					var parser = new LogFileParser(_repository, options.SmartUpdate);
+					var parser = new DefaultNLogFormatParser(_repository, options.SmartUpdate);
 
 					if (_configuration.ImportBufferSize > 0)
 						parser.MaxEntriesBeforeSave = _configuration.ImportBufferSize;

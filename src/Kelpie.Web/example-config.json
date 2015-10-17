@@ -1,8 +1,9 @@
 ﻿{
 	/* Rename this file to kelpie.config */
 	"ConfigFile": "",
+	"IsLuceneEnabled": true,
+	"LuceneIndexDirectory" :  "D:\\MyWebsites\\Kelpie\\App_Data\\Lucene",
 	"ImportBufferSize": 100,
-	"PageSize": 20,
 	"MaxAgeDays": 7,
 	"Applications": [
 		"App1"

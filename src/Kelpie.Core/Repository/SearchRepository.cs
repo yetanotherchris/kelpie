@@ -28,9 +28,7 @@ namespace Kelpie.Core.Repository
 		public SearchRepository(IConfiguration configuration)
 		{
 			_configuration = configuration;
-
-			// TODO: resolve ~/
-			IndexPath = @"d:\lucene";
+			IndexPath = _configuration.LuceneIndexDirectory;
 		}
 
 		/// <summary>
@@ -131,6 +129,7 @@ namespace Kelpie.Core.Repository
 			document.Add(new Field("exceptionMessage", logEntry.ExceptionMessage??"", Field.Store.YES, Field.Index.ANALYZED));
 			document.Add(new Field("exceptionType", logEntry.ExceptionType ?? "", Field.Store.YES, Field.Index.ANALYZED));
 			document.Add(new Field("message", logEntry.Message ?? "", Field.Store.NO, Field.Index.ANALYZED));
+			document.Add(new Field("truncatedMessage", logEntry.TruncatedMessage, Field.Store.YES, Field.Index.NO));
 
 			return document;
 		}
@@ -173,6 +172,11 @@ namespace Kelpie.Core.Repository
 			}
 		}
 
+		public string CreateLuceneSearchSyntax(string applicationName, string environment, string query)
+		{
+			return string.Format("application:{0} environment:{1} {2}", applicationName, environment, query);
+		}
+
 		public IEnumerable<LogEntry> Search(string searchText)
 		{
 			List<LogEntry> list = new List<LogEntry>();
@@ -181,7 +185,7 @@ namespace Kelpie.Core.Repository
 				return list;
 
 			StandardAnalyzer analyzer = new StandardAnalyzer(LUCENEVERSION);
-			MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENEVERSION, new string[] { "exceptionMessage", "exceptionType" }, analyzer);
+			MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENEVERSION, new string[] { "exceptionMessage", "exceptionType", "message" }, analyzer);
 
 			Query query = null;
 			try
@@ -206,7 +210,9 @@ namespace Kelpie.Core.Repository
 						foreach (ScoreDoc scoreDoc in topDocs.ScoreDocs.OrderByDescending(x => x.Score))
 						{
 							Document document = searcher.Doc(scoreDoc.Doc);
-							list.Add(DocumentToLogEntry(document));
+							LogEntry logEntry = DocumentToLogEntry(document);
+
+							list.Add(logEntry);
 						}
 					}
 				}
@@ -230,7 +236,7 @@ namespace Kelpie.Core.Repository
 				DateTime         = DateTime.Parse(document.GetField("date").StringValue),
 				ExceptionMessage = document.GetField("exceptionMessage").StringValue,
 				ExceptionType    = document.GetField("exceptionType").StringValue,
-				Message = ""
+				Message          = document.GetField("truncatedMessage").StringValue,
 			};
 		}
 	}
