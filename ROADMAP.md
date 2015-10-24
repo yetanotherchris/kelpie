@@ -32,8 +32,12 @@
 ### Iteration 6 (Done)
 1. Configuration for searching lucene
 
-### Not implemented
-1. Cleanup, test coverage, docs
-2. Improvements to the dashboard to show server with most errors, removing the average.
-3. Totals for each day.
-4. Paging
+### Not implemented (e.g. TODO)
+1. Improvements to the dashboard to show server with most errors, removing the average, totals for each day.
+2. Plugin system for different log formats.
+3. Paging
+4. A bit more documentation
+5. Integration tests for the console application.
+6. Acceptance tests for the web front end.
+ 
+
