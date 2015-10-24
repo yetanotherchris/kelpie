@@ -29,13 +29,11 @@
 ### Iteration 5 (Done)
 1. Search messages
 
-### Iteration 6
+### Iteration 6 (Done)
 1. Configuration for searching lucene
+
+### Not implemented
+1. Cleanup, test coverage, docs
 2. Improvements to the dashboard to show server with most errors, removing the average.
 3. Totals for each day.
-
-### Iteration 7
-1. Cleanup, test coverage, docs
-
-### Iteration 8
-1. Paging
+4. Paging
