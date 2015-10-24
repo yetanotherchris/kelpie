@@ -32,18 +32,6 @@
 		}
 		</tbody>
 	</table>
-
-	<div class="collection-item">
-		@if (Model.Page > 1)
-		{
-			@Html.ActionLink("<<", "Today", new { page = Model.Page - 1, rows = Model.Rows })
-		}
-		Page: @Model.Page of @Model.TotalPages
-		@if (Model.Page < Model.TotalPages)
-		{
-			@Html.ActionLink(">>", "Today", new { page = Model.Page + 1, rows = Model.Rows })
-		}
-	</div>
 }
 else
 {

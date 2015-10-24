@@ -42,7 +42,7 @@ namespace Kelpie.Web.Controllers
             return selectedEnvironment;
         }
 
-        public ActionResult Today(string applicationName, int? page, int? rows)
+        public ActionResult Today(string applicationName)
         {
             Environment currentEnvironment = GetSelectedEnvironment();
 
