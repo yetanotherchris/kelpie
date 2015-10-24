@@ -13,7 +13,7 @@ namespace Kelpie.Tests.Integration
 	public class LogRepositoryPagingTests
 	{
 		private ConfigurationMock _configuration;
-		private string _environmentName = "Dev";
+		private readonly string _environmentName = "Dev";
 
 		[SetUp]
 		public void SetUp()
@@ -21,6 +21,7 @@ namespace Kelpie.Tests.Integration
 			_configuration = new ConfigurationMock();
 			_configuration.MaxAgeDays = 99;
 			CreateRepository().DeleteCollection("LogEntry");
+			Thread.Sleep(500);
 		}
 
 		private LogEntryRepository CreateRepository()
@@ -39,7 +40,6 @@ namespace Kelpie.Tests.Integration
 			var repository = CreateRepository();
 			AddEntryToLog(repository, logApplication, "foo1");
 			AddEntryToLog(repository, logApplication, "foo2");
-			Thread.Sleep(1000);
 
 			// Act
 			IEnumerable<LogEntry> entries = repository.GetFilterEntriesForApp(new LogEntryFilter() { LogApplication = logApplication, Page = page, Rows = rows });
@@ -62,7 +62,6 @@ namespace Kelpie.Tests.Integration
 			var repository = CreateRepository();
 			AddEntryToLog(repository, logApplication, "foo1");
 			AddEntryToLog(repository, logApplication, "foo2");
-			Thread.Sleep(1000);
 
 			// Act
 			IEnumerable<LogEntry> entries = repository.GetFilterEntriesForApp(new LogEntryFilter()
@@ -90,7 +89,6 @@ namespace Kelpie.Tests.Integration
 			var repository = CreateRepository();
 			AddEntryToLog(repository, logApplication, "foo1");
 			AddEntryToLog(repository, logApplication, "foo2");
-			Thread.Sleep(1000);
 
 			// Act
 			IEnumerable<LogEntry> entries = repository.GetFilterEntriesForApp(new LogEntryFilter()

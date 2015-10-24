@@ -70,11 +70,6 @@ namespace Kelpie.Tests.MocksStubs
 			return null;
 		}
 
-	    public IEnumerable<LogEntry> GetFilterEntriesForApp(LogEntryFilter filter)
-	    {
-	        return null;
-	    }
-
 	    public LogEntry GetEntry(Guid id)
 		{
 			return null;

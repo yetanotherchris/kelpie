@@ -124,30 +124,6 @@ namespace Kelpie.Core.Repository
             return _collection.AsQueryable<LogEntry>().FirstOrDefault(x => x.Id == id);
         }
 
-        public IEnumerable<LogEntry> GetFilterEntriesForApp(LogEntryFilter filter)
-        {
-            if (!filter.Page.HasValue || filter.Page.Value < 1)
-                filter.Page = 1;
-            if (!filter.Rows.HasValue || filter.Rows.Value < 1)
-                filter.Rows = 100;
-            
-            var query = _collection.AsQueryable<LogEntry>();
-
-            if (filter.Start.HasValue)
-            {
-                query = query.Where(logEntry => logEntry.DateTime >= filter.Start.Value);
-            }
-            
-            if (filter.End.HasValue)
-            {
-                query = query.Where(logEntry => logEntry.DateTime < filter.End.Value);
-            }
-
-            return query.Where(x => x.ApplicationName.Equals(filter.LogApplication))
-                .Skip((filter.Page.Value - 1) * filter.Rows.Value)
-                .Take(filter.Rows.Value);
-        }
-
 		public IEnumerable<LogEntry> Search(string environment, string applicationName, string query)
 		{
 			if (string.IsNullOrEmpty(query))
@@ -182,5 +158,30 @@ namespace Kelpie.Core.Repository
 
 			collection.ReplaceOneAsync(info => info.Id.Equals(latestLogFileInfo.Id), latestLogFileInfo, new UpdateOptions() { IsUpsert = true});
 		}
-    }
+
+		// Early stages of paging.
+		internal IEnumerable<LogEntry> GetFilterEntriesForApp(LogEntryFilter filter)
+		{
+			if (!filter.Page.HasValue || filter.Page.Value < 1)
+				filter.Page = 1;
+			if (!filter.Rows.HasValue || filter.Rows.Value < 1)
+				filter.Rows = 100;
+
+			var query = _collection.AsQueryable<LogEntry>();
+
+			if (filter.Start.HasValue)
+			{
+				query = query.Where(logEntry => logEntry.DateTime >= filter.Start.Value);
+			}
+
+			if (filter.End.HasValue)
+			{
+				query = query.Where(logEntry => logEntry.DateTime < filter.End.Value);
+			}
+
+			return query.Where(x => x.ApplicationName.Equals(filter.LogApplication))
+				.Skip((filter.Page.Value - 1) * filter.Rows.Value)
+				.Take(filter.Rows.Value);
+		}
+	}
 }

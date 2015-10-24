@@ -49,15 +49,7 @@ namespace Kelpie.Web.Controllers
             ViewBag.EnvironmentName = currentEnvironment.Name;
             ViewBag.ApplicationName = applicationName;
 
-            var entries = _repository.GetFilterEntriesForApp(new LogEntryFilter()
-            {
-                Start = DateTime.Now.Date,
-                End = DateTime.Now.Date.AddHours(24),
-                LogApplication = applicationName,
-                Environment = currentEnvironment.Name,
-                Page = page,
-                Rows = rows
-            });
+            var entries = _repository.GetEntriesToday(currentEnvironment.Name, applicationName);
             return View(entries);
         }
 
