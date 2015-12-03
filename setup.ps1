@@ -1,10 +1,17 @@
 $ErrorActionPreference = "Stop"
 
+$mongoDataDir      = "D:\MongoDB"
 $solutionFile      = "Kelpie.sln"
 $configuration     = "Debug"
 $platform          = "Mixed Platforms"
 $msbuild           = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
 $configTool        = ".\src\Kelpie.Web.IisConfig\bin\Debug\Kelpie.Web.IisConfig.exe"
+
+# Install MongoDB, hack $env:sysdrive as the installer relies on it
+$oldSysDrive = $env:systemdrive
+$env:systemdrive = $mongoDataDir
+choco install mongodb -y
+$env:systemdrive = $oldSysDrive
 
 # Install nuget to restore
 Write-Host "Installing Nuget." -ForegroundColor Green
