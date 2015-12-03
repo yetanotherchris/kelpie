@@ -4,11 +4,7 @@ Scans NLog *text* log files and displays them in a filterable way in an MVC appl
 ## Getting started
 
 - Make sure you have IIS installed
-- Install MongoDB: https://www.mongodb.org/downloads
-- Create `c:\mongodb\data\db`
-- Run `start-mongodb.ps1`
-  - Or install it as a service: https://docs.mongodb.org/manual/tutorial/install-mongodb-on-windows/#configure-a-windows-service-for-mongodb
-- Run the setup.ps1 script.
+- Run the setup.ps1 script - this will install MongoDB to a D: drive (change the path in the script if needed).
 - Update the app.config and web.config files with the servers and applications you want.
 - Import your logs using the Kelpie.ConsoleApp program.
 
