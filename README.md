@@ -26,6 +26,8 @@ An example config is below. Things to note:
 			"ImportBufferSize": 10,
 			"PageSize": 20,
 			"MaxAgeDays": 7,
+			"IsLuceneEnabled" : true,
+			"LuceneIndexDirectory" : "D:\\Lucene", // only needed if you use Lucene for searching
 			"Applications": [
 				"App1",
 				"App2",
